@@ -1,0 +1,691 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+body {
+    background: #f6f8fa;
+    color: #24292f;
+}
+
+/* HEADER */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background: #24292f;
+    color: #fff;
+}
+
+header .logo-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#logo-text {
+    font-weight: 100;
+}
+
+.buscarNotificacoes {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 18px;
+}
+
+.grupoNotificaoesPlanos {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+header input[type="search"] {
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: none;
+}
+
+/* CONTAINER */
+.container {
+    display: flex;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 200px;
+    background: #1c2128;
+    color: #fff;
+    min-height: calc(100vh - 60px);
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 20px 0;
+}
+
+.sidebar ul li a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    color: #fff;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+
+.sidebar ul li a:hover {
+    background: #0366d6;
+}
+
+/* MAIN */
+.main {
+    flex: 1;
+    padding: 20px;
+}
+
+.header-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.botoesAddLinkChat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-add {
+    padding: 8px 12px;
+    background: #0366d6;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-add:hover {
+    background: #024ea2;
+}
+
+#meuLink{
+    padding: 8px 12px;
+    background: #0366d6;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.btn-addLinks {
+    padding: 8px 12px;
+    background: #0366d6;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-addLinks:hover {
+    background: #024ea2;
+}
+
+/* CARDS */
+.cards {
+    display: flex;
+    flex-wrap: wrap;         /* Faz quebrar para a próxima linha se não couber */
+    gap: 16px;  
+    
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding-bottom: 10px;
+}
+
+.cards::-webkit-scrollbar {
+    height: 8px;
+}
+
+.cards::-webkit-scrollbar-thumb {
+    background: #0366d6;
+    border-radius: 4px;
+}
+
+.card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    flex: 1 1 200px; 
+    min-width: 200px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.card h3 {
+    margin-bottom: 10px;
+}
+
+.card p {
+    font-size: 1.5rem;
+}
+
+/* TABELA */
+.tabela-bots table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.tabela-bots th,
+.tabela-bots td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.tabela-bots tr:last-child td {
+    border-bottom: none;
+}
+
+.acao {
+    padding: 5px 10px;
+    margin-right: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.editar {
+    background: #f0ad4e;
+    color: #fff;
+}
+
+.deletar {
+    background: #d9534f;
+    color: #fff;
+}
+
+.ativo {
+    color: green;
+    font-weight: bold;
+}
+
+.inativo {
+    color: red;
+    font-weight: bold;
+}
+
+.bots-cards {
+    display: flex;
+    /* deixa os cards em linha */
+    gap: 1rem;
+    /* espaço entre os cards */
+    overflow-x: auto;
+    /* barra de rolagem horizontal */
+    padding: 1rem 0;
+    scroll-behavior: smooth;
+    /* rolagem suave */
+}
+
+.bots-cards::-webkit-scrollbar {
+    height: 8px;
+    /* altura da barra */
+}
+
+.bots-cards::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 4px;
+}
+
+.bots-cards::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.bots-cards::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.bot-card {
+    min-width: 200px;
+    /* largura mínima do card */
+    background: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+    /* impede o card de encolher */
+}
+
+/* ============================= */
+/* ESTILO PARA TABELA DE LEADS   */
+/* ============================= */
+.tabela-leads {
+    margin-top: 20px;
+}
+
+.tabela-leads h3 {
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.tabela-leads table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.tabela-leads th,
+.tabela-leads td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.tabela-leads tr:last-child td {
+    border-bottom: none;
+}
+
+.links-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.links-container a {
+    display: block;
+    text-decoration: none;
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    text-align: center;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.links-container a:hover {
+    background-color: #0056b3;
+}
+
+.close {
+    float: right;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.btn-add {
+    margin-top: 5px;
+}
+
+/* Responsivo - mesma lógica da tabela de bots */
+@media screen and (max-width: 768px) {
+
+    .tabela-leads table {
+        font-size: 0.9rem;
+    }
+}
+
+@media screen and (max-width: 480px) {
+
+    .tabela-leads table,
+    .tabela-leads th,
+    .tabela-leads td {
+        font-size: 0.8rem;
+    }
+}
+
+
+#menuToggle {
+    display: none;
+}
+
+/* ============================= */
+/* ESTILO PARA TABELA DE LINKS   */
+/* ============================= */
+.tabela-links {
+    margin-top: 20px;
+}
+
+.tabela-links h3 {
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.tabela-links table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.tabela-links th,
+.tabela-links td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.tabela-links tr:last-child td {
+    border-bottom: none;
+}
+
+
+
+/* Responsivo - mesma lógica da tabela de leads */
+@media screen and (max-width: 768px) {
+    .tabela-links table {
+        font-size: 0.9rem;
+    }
+}
+
+@media screen and (max-width: 480px) {
+
+    .tabela-links table,
+    .tabela-links th,
+    .tabela-links td {
+        font-size: 0.8rem;
+    }
+}
+
+
+/* RESPONSIVIDADE */
+
+/* Tablets */
+@media screen and (max-width: 1024px) {
+
+    .container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        min-height: auto;
+    }
+
+    .main {
+        padding: 15px;
+    }
+
+    .cards {
+        flex-wrap: nowrap;
+    }
+
+    .card {
+        width: 100%;
+    }
+
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .buscarNotificacoes {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+}
+
+/* Celulares médios */
+@media screen and (max-width: 768px) {
+
+    /* HEADER FIXO */
+    header {
+        flex-direction: row;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 1000;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 30px;
+        background: #24292f;
+        color: #fff;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    #menuToggle {
+        display: block;
+    }
+
+    /* HEADER-MAIN FIXO */
+    .header-main {
+        position: fixed;
+        top: 60px;
+        /* altura do header */
+        left: 0;
+        width: 100%;
+        z-index: 999;
+        background: #f6f8fa;
+        /* mesma cor do fundo principal */
+        padding: 10px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    /* CARDS FIXOS */
+    .cards {
+        position: fixed;
+        top: 120px;
+        /* header + header-main */
+        left: 0;
+        width: 100%;
+        z-index: 998;
+        display: flex;
+        gap: 20px;
+        padding: 10px 20px;
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        background: #f6f8fa;
+    }
+
+    /* CONTEÚDO PRINCIPAL (tabela, etc) */
+    .main {
+        margin-top: 200px;
+        /* altura do header + header-main + cards */
+        padding: 20px;
+    }
+
+    #buscar {
+        display: none;
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+
+    .botoesAddLinkChat {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 60px;
+        left: -100%;
+        width: 200px;
+        height: calc(100vh - 60px);
+        background: #1c2128;
+        transition: left 0.3s ease;
+        z-index: 1000;
+    }
+
+    .sidebar.active {
+        left: 0;
+    }
+
+    .btn-add {
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .tabela-bots table {
+        font-size: 0.9rem;
+    }
+}
+
+/* Celulares pequenos */
+@media screen and (max-width: 480px) {
+    .cards {
+        gap: 10px;
+    }
+
+    .card p {
+        font-size: 1.2rem;
+    }
+
+    .tabela-bots table,
+    .tabela-bots th,
+    .tabela-bots td {
+        font-size: 0.8rem;
+    }
+
+    header input[type="search"] {
+        width: 100%;
+    }
+}
+
+/* Por padrão, tabela visível e cards escondidos */
+
+
+/* Em telas pequenas, escondemos a tabela e mostramos os cards */
+@media screen and (max-width: 768px) {
+    .tabela-bots table {
+        display: none;
+    }
+
+    .bots-cards {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .bot-card {
+        width: 100%;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        padding: 15px;
+        margin-bottom: 15px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .bot-card h4 {
+        margin-bottom: 8px;
+        font-size: 1.1rem;
+    }
+
+    .bot-card p {
+        font-size: 0.95rem;
+        margin-bottom: 5px;
+    }
+
+    .bot-card .status.ativo {
+        color: green;
+    }
+
+    .bot-card .status.inativo {
+        color: red;
+    }
+
+    .bot-card .acoes {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .bot-card .acoes button {
+        flex: 1;
+        padding: 6px;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+        color: #fff;
+        font-size: 0.9rem;
+    }
+
+    .bot-card .acoes .editar {
+        background: #f0ad4e;
+    }
+
+    .bot-card .acoes .deletar {
+        background: #d9534f;
+    }
+}
+
+/* CARDS - barra de rolagem sempre visível */
+.cards,
+.bots-cards {
+    overflow-x: scroll;
+    /* garante que a barra apareça mesmo sem rolar */
+    -webkit-overflow-scrolling: touch;
+    /* rolagem suave no mobile */
+    scroll-behavior: smooth;
+    padding-bottom: 10px;
+}
+
+/* Webkit (Chrome, Edge, Safari) */
+.cards::-webkit-scrollbar,
+.bots-cards::-webkit-scrollbar {
+    height: 12px;
+    /* deixa mais visível */
+}
+
+.cards::-webkit-scrollbar-track,
+.bots-cards::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 6px;
+}
+
+.cards::-webkit-scrollbar-thumb,
+.bots-cards::-webkit-scrollbar-thumb {
+    background: #0366d6;
+    /* cor mais visível */
+    border-radius: 6px;
+}
+
+.cards::-webkit-scrollbar-thumb:hover,
+.bots-cards::-webkit-scrollbar-thumb:hover {
+    background: #024ea2;
+    /* efeito hover */
+}
+
+/* Firefox */
+.cards,
+.bots-cards {
+    scrollbar-width: thin;
+    scrollbar-color: #0366d6 #f0f0f0;
+}
+
+/* Por padrão, tabela visível e cards escondidos */
+.leads-cards {
+    display: none;
+}

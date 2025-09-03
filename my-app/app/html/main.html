@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AtendeIA - Dashboard</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/my-app/app/css/main.css">
+    <link rel="stylesheet" href="/my-app/app/css/modalBot.css">
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+</head>
+
+<body>
+    <!-- HEADER -->
+    <header>
+        <div class="menu-toggle" id="menuToggle">
+            <i class="fa-solid fa-bars"></i>
+        </div>
+
+        <section class="logo-section">
+            <div class="logo-container">
+                <i id="logo-icon" class="fa-regular fa-comment-dots"></i>
+                <h1 id="logo-text">AtendeIA</h1>
+            </div>
+        </section>
+
+
+
+        <section class="buscarNotificacoes">
+            <input id="buscar" type="search" placeholder="Buscar bots...">
+            <section class="grupoNotificaoesPlanos">
+                <i class="fa-regular fa-bell"></i>
+                <p>Upgrade</p>
+            </section>
+        </section>
+    </header>
+
+    <!-- CONTAINER GERAL -->
+    <div class="container">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <nav>
+                <ul>
+                    <li><a href="#"><i class="fa-solid fa-robot"></i> Meus Bots</a></li>
+                    <li><a href="/my-app/app/html/grafico.html"><i class="fa-solid fa-chart-line"></i> Relatórios</a></li>
+                    <li>
+                        <a href="#" id="link-publico"><i class="fa-solid fa-link"></i>Copiar Meu Link</a>
+                    </li>
+
+                    <li><a href="#" id="btn-logout">Sair</a></li>
+                    <li><a href="#"><i class="fa-solid fa-gear"></i> Configurações</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="main">
+            <section class="header-main">
+                <h2>Dashboard</h2>
+                <div class="botoesAddLinkChat">
+                    <button class="btn-add">Novo Bot</button>
+                </div>
+
+            </section>
+
+            <!-- CARDS -->
+            <section class="cards">
+                <div class="card">
+                    <h3>Total de Bots</h3>
+                    <p>0</p>
+                </div>
+                <div class="card">
+                    <h3>Mensagens Enviadas</h3>
+                    <p>0</p>
+                </div>
+                <div class="card">
+                    <h3>Plano</h3>
+                    <p>Pro</p>
+                </div>
+            </section>
+
+            <!-- TABELA DE BOTS -->
+            <section class="tabela-bots">
+                <h3>Meus Bots</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nome-Bot</th>
+                            <th>Status</th>
+                            <th>Função</th>
+                            <th>Mensagens Hoje</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Linhas serão inseridas via JS -->
+                    </tbody>
+
+                </table>
+                <div class="bots-cards">
+                    <!-- Cards serão gerados via JS em telas pequenas -->
+                </div>
+            </section>
+
+            <!-- TABELA DE LINKS -->
+            <section class="tabela-links" style="display: none;">
+                <h2>Meus Links</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>URL</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-links"></tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+
+
+
+    <!-- Modal Criar Bot -->
+    <div id="modal-criar-bot" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Criar Novo Bot</h2>
+
+            <form id="form-criar-bot">
+                <label for="nomeBot">Nome do Bot</label>
+                <input type="text" id="nomeBot" placeholder="Ex: Suporte IA" required>
+
+                <label for="funcaoBot">Função do Bot</label>
+                <select id="funcaoBot" required>
+                    <option value="">Selecione...</option>
+                    <option value="outra">Criar Função</option>
+                    <option value="horario">Horário de funcionamento</option>
+                    <option value="preco">Preço dos produtos / serviços</option>
+                    <option value="contato">Informações de contato</option>
+                    <option value="endereco">Endereço da empresa</option>
+                    <option value="pagamento">Formas de pagamento</option>
+                    <option value="entrega">Prazo e formas de entrega</option>
+                    <option value="troca">Política de troca e devolução</option>
+                    <option value="promocao">Promoções e ofertas</option>
+                    <option value="produto">Informações sobre produtos</option>
+                    <option value="garantia">Garantia e assistência</option>
+
+                </select>
+
+                <!-- Campo escondido que só aparece se o usuário escolher "Outra" -->
+                <input type="text" id="funcaoBotCustom" placeholder="Digite a função do bot"
+                    style="display:none; margin-top:8px;">
+
+                <label for="descricaoBot">Resposta Do Bot</label>
+                <textarea id="descricaoBot" rows="4"></textarea>
+
+                <button type="submit" class="btn-add">Salvar Bot</button>
+            </form>
+        </div>
+    </div>
+
+
+
+    <!-- Modal Adicionar Links -->
+    <div id="modal-add-links" class="modal">
+        <div class="modal-content">
+            <span class="close close-links">&times;</span>
+            <h2>Adicionar Link</h2>
+
+            <form id="form-add-links">
+                <label for="linkNome">Nome do Site</label>
+                <input type="text" id="linkNome" placeholder="Ex: Instagram" required>
+
+                <label for="linkURL">URL do Site</label>
+                <input type="url" id="linkURL" placeholder="Ex: https://instagram.com" required>
+
+                <button type="submit" class="btn-add">Salvar Link</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Editar Bot -->
+    <div id="modal-editar-bot" class="modal">
+        <div class="modal-content">
+            <span class="close close-edit">&times;</span>
+            <h2>Editar Bot</h2>
+
+            <form id="form-editar-bot">
+                <input type="hidden" id="editBotId">
+
+                <label for="editNomeBot">Nome do Bot</label>
+                <input type="text" id="editNomeBot" required>
+
+                <label for="editFuncaoBot">Função do Bot</label>
+                <select id="editFuncaoBot" required>
+                    <option value="">Selecione...</option>
+                    <option value="outra">Criar Função</option>
+                    <option value="horario">Horário de funcionamento</option>
+                    <option value="preco">Preço dos produtos / serviços</option>
+                    <option value="contato">Informações de contato</option>
+                    <option value="endereco">Endereço da empresa</option>
+                    <option value="pagamento">Formas de pagamento</option>
+                    <option value="entrega">Prazo e formas de entrega</option>
+                    <option value="troca">Política de troca e devolução</option>
+                    <option value="promocao">Promoções e ofertas</option>
+                    <option value="produto">Informações sobre produtos</option>
+                    <option value="garantia">Garantia e assistência</option>
+                </select>
+
+                <!-- Campo extra escondido -->
+                <input type="text" id="editFuncaoBotCustom" placeholder="Digite a função do bot"
+                    style="display:none; margin-top:8px;">
+
+
+                <label for="editDescricaoBot">Treinar com IA dados da empresa</label>
+                <textarea id="editDescricaoBot" rows="4"></textarea>
+
+                <label for="editStatusBot">Status</label>
+                <select id="editStatusBot" required>
+                    <option value="Ativo">Ativo</option>
+                    <option value="Inativo">Inativo</option>
+                </select>
+
+                <button type="submit" class="btn-add">Salvar Alterações</button>
+            </form>
+        </div>
+    </div>
+
+
+
+
+
+    <!-- JS -->
+    <script type="module" src="/my-bd/firebase-config.js"></script>
+    <script type="module" src="/my-app/app/js/main.js"></script>
+    <script src="/my-app/app/js/modalBot.js"></script>
+    <script src="/my-app/app/js/menuHamburguer.js"></script>
+    <script src="/my-app/app/js/botoes.js"></script>
+    
+</body>
+
+</html>

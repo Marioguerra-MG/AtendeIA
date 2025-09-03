@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/my-app/app/css/index.css">
+  <title>AtendeIA - Login</title>
+
+</head>
+
+<body>
+  <div class="auth-container">
+    <h1>AtendeIA</h1>
+
+    <!-- Login -->
+    <div id="login-box">
+      <h2>Login</h2>
+      <form id="form-login">
+        <input type="email" id="loginEmail" placeholder="Email" required>
+        <input type="password" id="loginSenha" placeholder="Senha" required>
+        <button type="submit">Entrar</button>
+      </form>
+      <p>Não tem conta? <a href="/my-app/app/html/loginCadastro.html" id="mostrarCadastro">Cadastre-se</a></p>
+    </div>
+
+    <!-- Cadastro -->
+    <div id="cadastro-box" style="display:none;">
+      <h2>Criar Conta</h2>
+      <form id="form-cadastro">
+        <input type="text" id="cadastroNome" placeholder="Nome" required>
+        <input type="email" id="cadastroEmail" placeholder="Email" required>
+        <input type="password" id="cadastroSenha" placeholder="Senha" required>
+        <button type="submit">Cadastrar</button>
+      </form>
+      <p>Já tem conta? <a href="/index.html" id="mostrarLogin">Entrar</a></p>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container"></div>
+
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+ 
+  <script type="module" src="/my-bd/firebase-config.js"></script>
+  <script type="module" src="/my-app/app/js/auth.js"></script>
+
+</body>
+
+</html>

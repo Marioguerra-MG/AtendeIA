@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relatórios dos Bots</title>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Font Awesome para ícones -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/my-app/app/css/grafico.css">
+</head>
+<body class="dark">
+  <div class="topbar">
+    <h1>Relatórios dos Bots</h1>
+    <div class="topbar-actions">
+      <button id="btnToggleTheme" class="btn-dark"><i class="fa-solid fa-moon"></i> Tema</button>
+    </div>
+  </div>
+
+  <section class="relatorios">
+    <label for="selectBotRelatorio">Selecione um Bot:</label>
+    <select id="selectBotRelatorio">
+      <option value="">Todos os Bots</option>
+    </select>
+
+    <div class="relatorio-cards">
+      <div class="card">
+        <h3>Mensagens Enviadas</h3>
+        <p id="totalMensagensRelatorio">0</p>
+      </div>
+      <div class="card">
+        <h3>Usuários Ativos</h3>
+        <p id="usuariosAtivosRelatorio">0</p>
+      </div>
+      <div class="card">
+        <h3>Status</h3>
+        <p id="statusRelatorio">-</p>
+      </div>
+    </div>
+
+    <div class="grafico-container">
+      <canvas id="graficoMensagens"></canvas>
+    </div>
+  </section>
+
+  <!-- JS -->
+  <script type="module" src="/my-app/app/js/grafico.js"></script>
+</body>
+</html>
