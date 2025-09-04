@@ -1,3 +1,4 @@
+// ------------------- IMPORTS -------------------
 import { auth, db } from '/my-bd/firebase-config.js';
 import { collection, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
@@ -46,16 +47,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if(botSelecionado){
       totalMsg = botSelecionado.mensagens;
-      const usuarios = Array.isArray(botSelecionado.usuarios)?botSelecionado.usuarios:[];
-      usuarios.forEach(u=>usuariosSet.add(u));
+      (botSelecionado.usuarios || []).forEach(u=>usuariosSet.add(u));
       labels = ['Mensagens', 'Usuários'];
       data = [totalMsg, usuariosSet.size];
       statusRelatorio.textContent = botSelecionado.status;
     } else {
       listaDeBots.forEach(bot=>{
         totalMsg += bot.mensagens;
-        const usuarios = Array.isArray(bot.usuarios)?bot.usuarios:[];
-        usuarios.forEach(u=>usuariosSet.add(u));
+        (bot.usuarios || []).forEach(u=>usuariosSet.add(u));
       });
       labels = listaDeBots.map(b=>b.nome);
       data = listaDeBots.map(b=>b.mensagens);

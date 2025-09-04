@@ -36,7 +36,7 @@ function formatarNumero(num) {
 }
 
 // ------------------- FUNÇÃO PARA LIMITAR TEXTO -------------------
-function limitarTexto(texto, limite = 15) {
+function limitarTexto(texto, limite = 25) {
     if (!texto) return "";
     if (texto.length > limite) return texto.slice(0, limite) + "...";
     return texto;
@@ -47,7 +47,7 @@ function adicionarLinhaTabela(nome, status, funcao, mensagens, id) {
     const novaLinha = document.createElement("tr");
     novaLinha.dataset.id = id;
     novaLinha.innerHTML = `
-        <td title="${nome}">${limitarTexto(nome, 15)}</td>
+        <td title="${nome}">${limitarTexto(nome, 25)}</td>
         <td><span class="${status === "Ativo" ? "ativo" : "inativo"}">${status}</span></td>
         <td title="${funcao}">${limitarTexto(funcao, 20)}</td>
         <td>${formatarNumero(mensagens)}</td>
@@ -110,7 +110,7 @@ function atualizarBotsCards(botList) {
             card.innerHTML = `
                 <h4 title="${bot.nome}">${limitarTexto(bot.nome, 15)}</h4>
                 <p title="${bot.funcao}"><strong>Função:</strong> ${limitarTexto(bot.funcao, 20)}</p>
-                <p><strong>Mensagens Hoje:</strong> ${formatarNumero(bot.mensagens)}</p>
+                <p><strong>Mensagens:</strong> ${formatarNumero(bot.mensagens)}</p>
                 <p class="status ${bot.status === "Ativo" ? "ativo" : "inativo"}">${bot.status}</p>
                 <div class="acoes">
                     <button class="editar">Editar</button>
