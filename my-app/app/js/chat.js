@@ -39,23 +39,28 @@ const userId = "visitante_" + Math.floor(Math.random() * 1000000);
 // ------------------- CACHE LOCAL DE USUÁRIOS -------------------
 const cacheUsuariosPorBot = {};
 
+// ------------------- TRANSFORMAR LINKS EM [SAIBA MAIS] -------------------
+function transformarLinksEmSaibaMaisElegante(texto) {
+    if (!texto) return "";
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    return texto.replace(urlRegex, url => `<a href="${url}" target="_blank" rel="noopener noreferrer">[Saiba mais]</a>`);
+}
+
 // ------------------- MENSAGENS -------------------
 function adicionarMensagemNoChat(mensagem, tipo = "usuario") {
     const p = document.createElement("p");
     p.classList.add(tipo);
-    p.innerHTML = mensagem.replace(/\n/g, "<br>");
+    p.innerHTML = transformarLinksEmSaibaMaisElegante(mensagem).replace(/\n/g, "<br>");
     chatBox.appendChild(p);
     p.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
-// Envia mensagem do usuário, incrementando mensagens e usuários apenas se necessário
+// ------------------- Envia mensagem do usuário -------------------
 async function enviarMensagemUsuario(botId, mensagem) {
     adicionarMensagemNoChat(mensagem, "user");
     const botRef = doc(db, "bots", botId);
 
-    // Usa cache local para verificar se o usuário já foi contado
     if (!cacheUsuariosPorBot[botId]) {
-        // Busca inicial dos usuários do bot
         const snapshot = await getDocs(query(collection(db, "bots"), where("__name__", "==", botId)));
         const botData = snapshot.docs[0]?.data();
         cacheUsuariosPorBot[botId] = botData?.usuarios || [];
@@ -64,7 +69,7 @@ async function enviarMensagemUsuario(botId, mensagem) {
     const jaUsuario = cacheUsuariosPorBot[botId].includes(userId);
 
     if (!jaUsuario) {
-        cacheUsuariosPorBot[botId].push(userId); // adiciona no cache local
+        cacheUsuariosPorBot[botId].push(userId);
         await updateDoc(botRef, { 
             usuarios: arrayUnion(userId),
             usuariosMensagens: increment(1)
@@ -72,8 +77,8 @@ async function enviarMensagemUsuario(botId, mensagem) {
     }
 }
 
-// Adiciona mensagem do bot sem contar a saudação
-async function adicionarMensagemBotDigitando(botId, mensagem, tempo = 1500, contar=true) {
+// ------------------- Mensagem do bot digitando -------------------
+async function adicionarMensagemBotDigitando(botId, mensagem, tempo = 1500, contar = true) {
     const botDigitando = document.createElement("p");
     botDigitando.classList.add("bot");
     botDigitando.textContent = "Digitando... ⏳";
@@ -83,7 +88,7 @@ async function adicionarMensagemBotDigitando(botId, mensagem, tempo = 1500, cont
     return new Promise(resolve => {
         setTimeout(async () => {
             botDigitando.remove();
-            if(contar){
+            if (contar) {
                 await updateDoc(doc(db, "bots", botId), { mensagens: increment(1) });
             }
             adicionarMensagemNoChat(mensagem, "bot");
@@ -95,29 +100,39 @@ async function adicionarMensagemBotDigitando(botId, mensagem, tempo = 1500, cont
 // ------------------- INICIA CHAT -------------------
 async function iniciarChatPublico() {
     const uid = obterUIDDaURL();
-    if(!uid){
+    if (!uid) {
         chatBox.innerHTML = "<p class='bot'>Link inválido ou UID não encontrado.</p>";
         return;
     }
 
     chatContainer.style.display = "flex";
 
-    const q = query(collection(db, "bots"), where("uid","==",uid));
+    // Buscar bots com UID correspondente
+    const q = query(collection(db, "bots"), where("uid", "==", uid));
     const snapshot = await getDocs(q);
-    if(snapshot.empty){
+    if (snapshot.empty) {
         chatBox.innerHTML = "<p class='bot'>Nenhum bot disponível.</p>";
         return;
     }
 
-    const firstBot = snapshot.docs[0];
+    // Filtrar somente bots ativos (status = "Ativo")
+    const botsAtivos = snapshot.docs
+        .map(docSnap => ({ id: docSnap.id, ...docSnap.data() }))
+        .filter(bot => bot.status === "Ativo");
+
+    if (botsAtivos.length === 0) {
+        chatBox.innerHTML = "<p class='bot'>Nenhum bot ativo disponível.</p>";
+        return;
+    }
+
+    const firstBot = botsAtivos[0];
     const nomeAssistente = nomeAleatorio();
 
-    // ✅ Mensagens de saudação NÃO contam no total de mensagens
     await adicionarMensagemBotDigitando(firstBot.id, obterSaudacao(), 1500, false);
     await adicionarMensagemBotDigitando(firstBot.id, `Eu sou o ${nomeAssistente}. 🤖`, 2000, false);
     await adicionarMensagemBotDigitando(firstBot.id, "Escolha uma opção abaixo para começar.", 2000, false);
 
-    if(!document.querySelector(".select-container")){
+    if (!document.querySelector(".select-container")) {
         const container = document.createElement("div");
         container.classList.add("select-container");
 
@@ -136,23 +151,22 @@ async function iniciarChatPublico() {
         placeholder.selected = true;
         selectChat.appendChild(placeholder);
 
-        snapshot.forEach(docSnap => {
-            const bot = docSnap.data();
+        // Adiciona apenas bots ativos no select
+        botsAtivos.forEach(bot => {
             const opt = document.createElement("option");
-            opt.value = docSnap.id;
+            opt.value = bot.id;
             opt.textContent = bot.funcao || "Função não definida";
             selectChat.appendChild(opt);
         });
 
-        selectChat.addEventListener("change", async ()=>{
+        selectChat.addEventListener("change", async () => {
             const botId = selectChat.value;
-            if(!botId) return;
+            if (!botId) return;
 
-            const botSnap = await getDocs(query(collection(db, "bots"), where("__name__","==",botId)));
-            const botData = botSnap.docs[0]?.data();
-            if(!botData) return;
+            const botData = botsAtivos.find(b => b.id === botId);
+            if (!botData) return;
 
-            await enviarMensagemUsuario(botId, botData.funcao || "Bot"); // userId fixo
+            await enviarMensagemUsuario(botId, botData.funcao || "Bot");
             await adicionarMensagemBotDigitando(botId, botData.descricao || "Sem resposta configurada.", 1000);
 
             selectChat.value = "";
@@ -163,4 +177,5 @@ async function iniciarChatPublico() {
     }
 }
 
+// ------------------- INICIA -------------------
 iniciarChatPublico();

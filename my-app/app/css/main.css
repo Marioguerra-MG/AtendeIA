@@ -236,6 +236,7 @@ header input[type="search"] {
     padding: 1rem 0;
     scroll-behavior: smooth;
     /* rolagem suave */
+    margin-top: 5px;
 }
 
 .bots-cards::-webkit-scrollbar {
