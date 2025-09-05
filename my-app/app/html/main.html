@@ -132,44 +132,52 @@
 
 
 
-    <!-- Modal Criar Bot -->
-    <div id="modal-criar-bot" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Criar Novo Bot</h2>
+   <!-- Modal Criar Bot Atualizado -->
+<div id="modal-criar-bot" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Criar Novo Bot</h2>
 
-            <form id="form-criar-bot">
-                <label for="nomeBot">Nome do Bot</label>
-                <input type="text" id="nomeBot" placeholder="Ex: Suporte IA" required>
+        <form id="form-criar-bot">
+            <label for="templateBot">Escolher Template</label>
+            <select id="templateBot">
+                <option value="">Selecione um template...</option>
+                <option value="restaurante">Restaurante</option>
+                <option value="ecommerce">E-commerce</option>
+            </select>
 
-                <label for="funcaoBot">Função do Bot</label>
-                <select id="funcaoBot" required>
-                    <option value="">Selecione...</option>
-                    <option value="outra">Criar Função</option>
-                    <option value="horario">Horário de funcionamento</option>
-                    <option value="preco">Preço dos produtos / serviços</option>
-                    <option value="contato">Informações de contato</option>
-                    <option value="endereco">Endereço da empresa</option>
-                    <option value="pagamento">Formas de pagamento</option>
-                    <option value="entrega">Prazo e formas de entrega</option>
-                    <option value="troca">Política de troca e devolução</option>
-                    <option value="promocao">Promoções e ofertas</option>
-                    <option value="produto">Informações sobre produtos</option>
-                    <option value="garantia">Garantia e assistência</option>
+            <label for="nomeBot">Nome do Bot</label>
+            <input type="text" id="nomeBot" placeholder="Ex: Suporte IA" required>
 
-                </select>
+            <label for="funcaoBot">Função do Bot</label>
+            <select id="funcaoBot" required>
+                <option value="">Selecione...</option>
+                <option value="outra">Criar Função</option>
+                <option value="horario">Horário de funcionamento</option>
+                <option value="preco">Preço dos produtos / serviços</option>
+                <option value="contato">Informações de contato</option>
+                <option value="endereco">Endereço da empresa</option>
+                <option value="pagamento">Formas de pagamento</option>
+                <option value="entrega">Prazo e formas de entrega</option>
+                <option value="troca">Política de troca e devolução</option>
+                <option value="promocao">Promoções e ofertas</option>
+                <option value="produto">Informações sobre produtos</option>
+                <option value="garantia">Garantia e assistência</option>
+            </select>
 
-                <!-- Campo escondido que só aparece se o usuário escolher "Outra" -->
-                <input type="text" id="funcaoBotCustom" placeholder="Digite a função do bot"
-                    style="display:none; margin-top:8px;">
+            <!-- Campo customizado que só aparece se usuário escolher "Outra" -->
+            <input type="text" id="funcaoBotCustom" placeholder="Digite a função do bot"
+                   style="display:none; margin-top:8px;">
 
-                <label for="descricaoBot">Resposta Do Bot</label>
-                <textarea id="descricaoBot" rows="4"></textarea>
+            <label for="descricaoBot">Resposta do Bot</label>
+            <textarea id="descricaoBot" rows="4"></textarea>
 
-                <button type="submit" class="btn-add">Salvar Bot</button>
-            </form>
-        </div>
+            <button type="submit" class="btn-add">Salvar Bot</button>
+        </form>
     </div>
+</div>
+
+                    
 
 
 

@@ -78,6 +78,32 @@ if (!botCardsContainer) {
 // ---------- ARRAY GLOBAL ----------
 let listaDeBots = [];
 
+// ---------- TEMPLATES ----------
+// ---------- TEMPLATES HUMANIZADOS ----------
+const templates = [
+  {
+    id: "restaurante",
+    nome: "Restaurante",
+    funcao: "Atendimento Restaurante",
+    descricao: [
+      "Olá! Funcionamos de 10h às 22h todos os dias. 🍽️",
+      "Hoje no cardápio temos: lasanha, estrogonofe e salada Caesar. 😋",
+      "Quer saber das promoções? Nosso Happy Hour é das 18h às 20h: 50% em drinks selecionados! 🍹"
+    ]
+  },
+  {
+    id: "ecommerce",
+    nome: "E-commerce",
+    funcao: "Atendimento E-commerce",
+    descricao: [
+      "Oi! Para rastrear seu pedido, use o código que enviamos por e-mail. 📦",
+      "Aceitamos pagamento por cartão, Pix ou boleto. 💳",
+      "Confira nossas promoções: frete grátis em compras acima de R$150! 🎉"
+    ]
+  }
+];
+
+
 // ---------- FORMATADOR ----------
 function formatarNumero(num) {
   num = Number(num) || 0;
@@ -178,13 +204,9 @@ function atualizarBotsCards(botList) {
 function formatarDescricaoComLink(descricao) {
   if (!descricao) return "";
 
-  // Regex simples para detectar URLs
   const urlRegex = /(https?:\/\/[^\s]+)/g;
-
-  // Substitui qualquer link pelo texto "Saiba mais" clicável
   return descricao.replace(urlRegex, url => `<a href="${url}" target="_blank" rel="noopener noreferrer">Saiba mais</a>`);
 }
-
 
 // ---------- EDIÇÃO / EXCLUSÃO ----------
 async function abrirModalEditar(id) {
@@ -200,14 +222,12 @@ async function abrirModalEditar(id) {
   }
 }
 
-// ------------------- MODAL DE CONFIRMAÇÃO -------------------
+// ---------- MODAL DE CONFIRMAÇÃO ----------
 function confirmModal(message) {
   return new Promise((resolve) => {
-    // Verifica se já existe e remove
     let oldModal = document.getElementById("confirm-modal");
     if (oldModal) oldModal.remove();
 
-    // Overlay
     const overlay = document.createElement("div");
     overlay.id = "confirm-modal";
     overlay.style.position = "fixed";
@@ -221,7 +241,6 @@ function confirmModal(message) {
     overlay.style.justifyContent = "center";
     overlay.style.zIndex = "10000";
 
-    // Caixa do modal
     const box = document.createElement("div");
     box.style.background = "#fff";
     box.style.padding = "20px";
@@ -238,12 +257,10 @@ function confirmModal(message) {
     overlay.appendChild(box);
     document.body.appendChild(overlay);
 
-    // Eventos
     box.querySelector("#confirm-yes").addEventListener("click", () => {
       overlay.remove();
       resolve(true);
     });
-
     box.querySelector("#confirm-no").addEventListener("click", () => {
       overlay.remove();
       resolve(false);
@@ -251,7 +268,7 @@ function confirmModal(message) {
   });
 }
 
-// ------------------- EXCLUIR BOT -------------------
+// ---------- EXCLUIR BOT ----------
 async function excluirBot(id) {
   const confirmar = await confirmModal("Tem certeza que deseja excluir este bot?");
   if (confirmar) {
@@ -266,7 +283,6 @@ async function excluirBot(id) {
     showToast("Exclusão cancelada.", "error");
   }
 }
-
 
 // ---------- FIRESTORE LISTENER ----------
 onAuthStateChanged(auth, user => {
@@ -310,7 +326,7 @@ buscarInput?.addEventListener("input", () => {
   });
 });
 
-// ---------- CRIAR ----------
+// ---------- CRIAR COM TEMPLATES ----------
 formCriarBot?.addEventListener("submit", async (e) => {
   e.preventDefault();
   const nome = document.getElementById("nomeBot").value.trim();
@@ -339,6 +355,20 @@ formCriarBot?.addEventListener("submit", async (e) => {
   } catch (e) {
     console.error(e);
     showToast("Erro ao criar bot.", "error");
+  }
+});
+
+// ---------- TEMPLATE SELECTION ----------
+document.getElementById("templateBot")?.addEventListener("change", (e) => {
+  const selectedTemplate = templates.find(t => t.id === e.target.value);
+  if (selectedTemplate) {
+    document.getElementById("nomeBot").value = `Bot ${selectedTemplate.nome}`;
+    document.getElementById("funcaoBot").value = selectedTemplate.funcao;
+    document.getElementById("descricaoBot").value = selectedTemplate.descricao;
+  } else {
+    document.getElementById("nomeBot").value = "";
+    document.getElementById("funcaoBot").value = "";
+    document.getElementById("descricaoBot").value = "";
   }
 });
 
