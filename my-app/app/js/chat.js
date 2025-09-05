@@ -81,7 +81,7 @@ async function enviarMensagemUsuario(botId, mensagem) {
 async function adicionarMensagemBotDigitando(botId, mensagem, tempo = 1500, contar = true) {
     const botDigitando = document.createElement("p");
     botDigitando.classList.add("bot");
-    botDigitando.textContent = "Digitando... ⏳";
+    botDigitando.textContent = "Digitando...";
     chatBox.appendChild(botDigitando);
     botDigitando.scrollIntoView({ behavior: "smooth", block: "start" });
 
@@ -129,7 +129,7 @@ async function iniciarChatPublico() {
     const nomeAssistente = nomeAleatorio();
 
     await adicionarMensagemBotDigitando(firstBot.id, obterSaudacao(), 1500, false);
-    await adicionarMensagemBotDigitando(firstBot.id, `Eu sou o ${nomeAssistente}. 🤖`, 2000, false);
+    await adicionarMensagemBotDigitando(firstBot.id, `Eu sou o ${nomeAssistente}.`, 2000, false);
     await adicionarMensagemBotDigitando(firstBot.id, "Escolha uma opção abaixo para começar.", 2000, false);
 
     if (!document.querySelector(".select-container")) {
