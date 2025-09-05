@@ -130,7 +130,7 @@ async function iniciarChatPublico() {
 
     await adicionarMensagemBotDigitando(firstBot.id, obterSaudacao(), 1500, false);
     await adicionarMensagemBotDigitando(firstBot.id, `Eu sou o ${nomeAssistente}.`, 2000, false);
-    await adicionarMensagemBotDigitando(firstBot.id, "Escolha uma opção abaixo para começar.", 2000, false);
+    await adicionarMensagemBotDigitando(firstBot.id, "Escolha uma opção acima para começar.", 2000, false);
 
     if (!document.querySelector(".select-container")) {
         const container = document.createElement("div");
