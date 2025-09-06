@@ -7,13 +7,18 @@
   font-family: "Poppins", sans-serif;
 }
 
+header {
+  width: 100%;
+  height: 5px;
+}
+
 /* Container principal */
 .chat-container {
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 600px;  
-  height: 100vh; /* altura fixa para o chat */
+  max-width: 600px;
+  height: 100vh;
   margin: auto;
   border-radius: 12px;
   background: #f7f7f8;
@@ -21,10 +26,9 @@
   position: relative;
 }
 
-/* Header fixo */
-.chat-header {
-  padding: 16px;
-  background: linear-gradient(135deg, #008069, #00bfa5);
+#txtSaudacao {
+  padding: 5px;
+  background: linear-gradient(135deg, #008069);
   color: #fff;
   font-weight: 500;
   font-size: 1rem;
@@ -34,22 +38,49 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  overflow: visible;
+  /* permite que o select cresça */
+}
+
+/* Header fixo */
+.chat-header {
+  padding: 16px;
+  background: linear-gradient(135deg, #008069);
+  color: #fff;
+  font-weight: 500;
+  font-size: 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow: visible;
+  /* permite que o select cresça */
 }
 
 /* Select estilizado */
 .chat-header select.select-chat {
   width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
   padding: 0.9em 1em;
   border: none;
   border-radius: 12px;
   font-size: 1rem;
   background: #fff;
   color: #333;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
   cursor: pointer;
   transition: all 0.2s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  max-height: 200px;
+  /* evita que fique muito grande */
+  overflow-y: auto;
+  /* scroll interno se necessário */
 }
-
 
 /* Caixa de mensagens */
 .chat-box {
@@ -59,7 +90,7 @@
   flex-direction: column;
   gap: 0.8rem;
   background: #e6e5ea;
-  overflow-y: auto; /* Habilita a barra de rolagem */
+  overflow-y: auto;
   scroll-behavior: smooth;
   min-height: 0;
 }
@@ -95,15 +126,23 @@
 .chat-box::-webkit-scrollbar {
   width: 6px;
 }
+
 .chat-box::-webkit-scrollbar-thumb {
-  background: rgba(0,0,0,0.15);
+  background: rgba(0, 0, 0, 0.15);
   border-radius: 3px;
 }
 
 /* Fade in */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(5px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Input fixo */
@@ -115,9 +154,10 @@
   background: #f7f7f8;
   border-top: 1px solid #ddd;
   position: sticky;
-  bottom: 50px; /* acima do botão sair */
+  bottom: 50px;
   z-index: 10;
 }
+
 .chat-input input {
   flex: 1;
   border: none;
@@ -127,6 +167,7 @@
   font-size: 1rem;
   background: #fff;
 }
+
 .chat-input button {
   background: #00c48c;
   border: none;
@@ -141,7 +182,10 @@
   font-size: 1.2rem;
   transition: 0.2s;
 }
-.chat-input button:hover { background: #008069; }
+
+.chat-input button:hover {
+  background: #008069;
+}
 
 /* Botão sair fixo */
 .sair-chat {
@@ -155,7 +199,6 @@
   cursor: pointer;
   z-index: 15;
 }
-
 
 /* FORMULÁRIO DE LEAD */
 .form-lead {
@@ -223,40 +266,42 @@
   background: #008069;
 }
 
-/* Responsividade */
-@media (max-width: 600px) {
-  .form-lead {
-    margin: 20px;
-    padding: 20px 16px;
-  }
-  .form-lead h3 {
-    font-size: 1.4rem;
-  }
-  .form-lead input, .form-lead button {
-    font-size: 0.95rem;
-    padding: 10px 14px;
-  }
-}
-
-
-/* Responsividade para celular */
+/* Responsividade geral */
 @media (max-width: 600px) {
   .chat-container {
     max-width: 100%;
     border-radius: 0;
   }
+
   .chat-box p {
     max-width: 95%;
-    font-size: 1.0rem;
+    font-size: 1rem;
     padding: 1rem 1.2rem;
   }
+
   .chat-input input {
     font-size: 1rem;
     padding: 0.9rem 1.2rem;
   }
+
   .chat-input button {
     width: 50px;
     height: 50px;
     font-size: 1.3rem;
+  }
+
+  .form-lead {
+    margin: 20px;
+    padding: 20px 16px;
+  }
+
+  .form-lead h3 {
+    font-size: 1.4rem;
+  }
+
+  .form-lead input,
+  .form-lead button {
+    font-size: 0.95rem;
+    padding: 10px 14px;
   }
 }
