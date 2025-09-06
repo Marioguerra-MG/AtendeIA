@@ -79,7 +79,6 @@ if (!botCardsContainer) {
 let listaDeBots = [];
 
 // ---------- TEMPLATES ----------
-// ---------- TEMPLATES HUMANIZADOS ----------
 const templates = [
   {
     id: "restaurante",
@@ -102,7 +101,6 @@ const templates = [
     ]
   }
 ];
-
 
 // ---------- FORMATADOR ----------
 function formatarNumero(num) {
@@ -199,13 +197,6 @@ function atualizarBotsCards(botList) {
       card.querySelector(".deletar").addEventListener("click", () => excluirBot(bot.id));
     });
   }
-}
-
-function formatarDescricaoComLink(descricao) {
-  if (!descricao) return "";
-
-  const urlRegex = /(https?:\/\/[^\s]+)/g;
-  return descricao.replace(urlRegex, url => `<a href="${url}" target="_blank" rel="noopener noreferrer">Saiba mais</a>`);
 }
 
 // ---------- EDIÇÃO / EXCLUSÃO ----------
@@ -326,7 +317,48 @@ buscarInput?.addEventListener("input", () => {
   });
 });
 
-// ---------- CRIAR COM TEMPLATES ----------
+// ---------- WIZARD DE CRIAR BOT (ZERO) ----------
+const steps = document.querySelectorAll("#modal-criar-bot .step");
+let currentStep = 0;
+
+function showStep(index) {
+  steps.forEach((s, i) => s.classList.toggle("active", i === index));
+  currentStep = index;
+}
+
+document.querySelectorAll("#modal-criar-bot .btn-proximo")?.forEach(btn => {
+  btn.addEventListener("click", () => showStep(currentStep + 1));
+});
+
+document.querySelectorAll("#modal-criar-bot .btn-voltar")?.forEach(btn => {
+  btn.addEventListener("click", () => showStep(currentStep - 1));
+});
+
+// ---------- INPUT EXTRA "OUTRA" ----------
+const funcaoSelect = document.getElementById("funcaoBot");
+const funcaoCustom = document.getElementById("funcaoBotCustom");
+funcaoSelect?.addEventListener("change", () => {
+  if (funcaoSelect.value === "outra") {
+    funcaoCustom.style.display = "block";
+    funcaoCustom.required = true;
+  } else {
+    funcaoCustom.style.display = "none";
+    funcaoCustom.required = false;
+  }
+});
+
+document.getElementById("editFuncaoBot")?.addEventListener("change", (e) => {
+    const customInput = document.getElementById("editFuncaoBotCustom");
+    if (e.target.value === "outra") {
+        customInput.style.display = "block";
+        customInput.required = true;
+    } else {
+        customInput.style.display = "none";
+        customInput.required = false;
+    }
+});
+
+// ---------- CRIAR BOT ----------
 formCriarBot?.addEventListener("submit", async (e) => {
   e.preventDefault();
   const nome = document.getElementById("nomeBot").value.trim();
@@ -350,8 +382,7 @@ formCriarBot?.addEventListener("submit", async (e) => {
     });
     showToast("Bot criado com sucesso!");
     formCriarBot.reset();
-    const modalCriar = document.getElementById("modal-criar-bot");
-    if (modalCriar) modalCriar.style.display = "none";
+    document.getElementById("modal-criar-bot").style.display = "none";
   } catch (e) {
     console.error(e);
     showToast("Erro ao criar bot.", "error");
@@ -372,7 +403,7 @@ document.getElementById("templateBot")?.addEventListener("change", (e) => {
   }
 });
 
-// ---------- EDITAR ----------
+// ---------- EDITAR BOT ----------
 formEditarBot?.addEventListener("submit", async (e) => {
   e.preventDefault();
   const id = document.getElementById("editBotId").value;
@@ -402,7 +433,10 @@ formEditarBot?.addEventListener("submit", async (e) => {
 document.querySelector(".close-edit")?.addEventListener("click", () => { if (modalEditar) modalEditar.style.display = "none"; });
 btnAdd?.addEventListener("click", () => {
   const modalCriar = document.getElementById("modal-criar-bot");
-  if (modalCriar) modalCriar.style.display = "flex";
+  if (modalCriar) {
+    modalCriar.style.display = "flex";
+    showStep(0);
+  }
 });
 document.querySelector(".close")?.addEventListener("click", () => {
   const modalCriar = document.getElementById("modal-criar-bot");

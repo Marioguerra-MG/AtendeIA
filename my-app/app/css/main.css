@@ -104,7 +104,7 @@ header input[type="search"] {
     gap: 5px;
 }
 
-.btn-add {
+#btnAdd {
     padding: 8px 12px;
     background: #0366d6;
     color: #fff;
@@ -113,7 +113,7 @@ header input[type="search"] {
     cursor: pointer;
 }
 
-.btn-add:hover {
+#btnAdd:hover {
     background: #024ea2;
 }
 
@@ -331,9 +331,90 @@ header input[type="search"] {
     cursor: pointer;
 }
 
-.btn-add {
+#btnAdd {
     margin-top: 5px;
 }
+
+/* Modal */
+.modal {
+  display: none; /* Escondido por padrão */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 20px 30px;
+  border-radius: 10px;
+  max-width: 500px;
+  width: 90%;
+  position: relative;
+}
+
+/* Botão fechar */
+.modal-content .close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+/* Wizard steps */
+#modal-criar-bot .step {
+  display: none; /* Esconde todas por padrão */
+}
+
+#modal-criar-bot .step.active {
+  display: block; /* Mostra apenas o step ativo */
+}
+
+
+/* Botões */
+button.btn-add, button.btn-proximo, button.btn-voltar {
+  background: #28a745;
+  color: #fff;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+  font-size: 12px;
+}
+
+button.btn-voltar {
+  background: #dc3545;
+}
+
+button.btn-proximo {
+  background: #007bff;
+}
+
+/* Inputs e textarea */
+input[type="text"], select, textarea {
+  width: 100%;
+  padding: 8px 10px;
+  margin: 6px 0 12px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+/* Label */
+label {
+  font-weight: bold;
+  margin-top: 8px;
+  display: block;
+}
+
+
 
 /* Responsivo - mesma lógica da tabela de bots */
 @media screen and (max-width: 768px) {
