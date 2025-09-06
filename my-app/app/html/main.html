@@ -15,7 +15,6 @@
     <!-- CSS -->
     <link rel="stylesheet" href="/my-app/app/css/main.css">
     <link rel="stylesheet" href="/my-app/app/css/modalBot.css">
-    <link rel="stylesheet" href="/my-app/app/css/ajuda.css">
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -54,7 +53,8 @@
             <nav>
                 <ul>
                     <li><a href="#"><i class="fa-solid fa-robot"></i> Meus Bots</a></li>
-                    <li><a href="/my-app/app/html/grafico.html"><i class="fa-solid fa-chart-line"></i> Relatórios</a></li>
+                    <li><a href="/my-app/app/html/grafico.html"><i class="fa-solid fa-chart-line"></i> Relatórios</a>
+                    </li>
                     <li>
                         <a href="#" id="link-publico"><i class="fa-solid fa-link"></i>Copiar Meu Link</a>
                     </li>
@@ -133,71 +133,78 @@
 
 
 
-<!-- Modal Criar Bot Atualizado com Wizard -->
-<div id="modal-criar-bot" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Criar Novo Bot</h2>
+    <!-- Modal Criar Bot Atualizado com Wizard -->
+    <div id="modal-criar-bot" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Criar Novo Bot</h2>
 
-        <form id="form-criar-bot">
-            <!-- STEP 1: Escolher Template e Nome -->
-            <div class="step active">
-                <label for="templateBot">Escolher Template</label>
-                <select id="templateBot">
-                    <option value="">Selecione um template...</option>
-                    <option value="restaurante">Restaurante</option>
-                    <option value="ecommerce">E-commerce</option>
-                </select>
 
-                <label for="nomeBot">Nome do Bot</label>
-                <input type="text" id="nomeBot" placeholder="Ex: Suporte IA" required>
+            <form id="form-criar-bot">
+                <!-- STEP 1: Escolher Template e Nome -->
+                <div class="step active">
+                    <label for="templateBot"><strong>Escolher templete ou digite o nome bot:</strong></label>
+                    <label for="templateBot">Escolher Template</label>
+                    <select id="templateBot">
+                        <option value="">Selecione um template...</option>
+                        <option value="restaurante">Restaurante</option>
+                        <option value="ecommerce">E-commerce</option>
+                    </select>
 
-                <button type="button" class="btn-proximo">Próximo</button>
-            </div>
 
-            <!-- STEP 2: Função -->
-            <div class="step">
-                <label for="funcaoBot">Função do Bot</label>
-                <select id="funcaoBot" required>
-                    <option value="">Selecione...</option>
-                    <option value="outra">Criar Função</option>
-                    <option value="horario">Horário de funcionamento</option>
-                    <option value="preco">Preço dos produtos / serviços</option>
-                    <option value="contato">Informações de contato</option>
-                    <option value="endereco">Endereço da empresa</option>
-                    <option value="pagamento">Formas de pagamento</option>
-                    <option value="entrega">Prazo e formas de entrega</option>
-                    <option value="troca">Política de troca e devolução</option>
-                    <option value="promocao">Promoções e ofertas</option>
-                    <option value="produto">Informações sobre produtos</option>
-                    <option value="garantia">Garantia e assistência</option>
-                </select>
 
-                <input type="text" id="funcaoBotCustom" placeholder="Digite a função do bot"
-                       style="display:none; margin-top:8px;">
+                    <label for="nomeBot">Nome do Bot:</label>
+                    <input type="text" id="nomeBot" placeholder="Ex: Suporte IA" required>
 
-                <div style="margin-top:10px;">
-                    <button type="button" class="btn-voltar">Voltar</button>
                     <button type="button" class="btn-proximo">Próximo</button>
                 </div>
-            </div>
 
-            <!-- STEP 3: Descrição -->
-            <div class="step" id="step3">
-                <label for="descricaoBot">Resposta do Bot</label>
-                <textarea id="descricaoBot" rows="4"></textarea>
-
-                <div id="btnStep3" style="margin-top:10px;">
-                    <button type="button" class="btn-voltar">Voltar</button>
-                    <button type="submit" class="btn-add">Salvar Bot</button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-
-
+                <!-- STEP 2: Função -->
+                <div class="step">
                     
+                    <label for="funcaoBot"><p id="txtInfoStep2">Explique de forma simples, fale como se fosse o cliente fazendo uma pergunata:</p></label>
+                    <label for="funcaoBot">Pergunata:</label>
+                    <select id="funcaoBot" required>
+                        <option value="">Selecione uma opção...</option>
+                        <option value="outra">Criar uma função:</option>
+                        <option value="horario">Horário de funcionamento</option>
+                        <option value="preco">Preço dos produtos ou serviços</option>
+                        <option value="contato">Informações de contato</option>
+                        <option value="endereco">Endereço da empresa</option>
+                        <option value="pagamento">Formas de pagamento aceitas</option>
+                        <option value="entrega">Informar prazo e formas de entrega</option>
+                        <option value="troca">Detalhar política de troca e devolução</option>
+                        <option value="promocao">Promoções e ofertas</option>
+                        <option value="produto">Informações sobre produtos</option>
+                        <option value="garantia">Esclarecer garantia e assistência técnica</option>
+                    </select>
+
+
+                    <input type="text" id="funcaoBotCustom" placeholder="Digite a função do bot"
+                        style="display:none; margin-top:8px;">
+
+                    <div style="margin-top:10px;">
+                        <button type="button" class="btn-voltar">Voltar</button>
+                        <button type="button" class="btn-proximo">Próximo</button>
+                    </div>
+                </div>
+
+                <!-- STEP 3: Descrição -->
+                <div class="step" id="step3">
+                    <label for="descricaoBot">Resposta do Bot</label>
+                    <textarea id="descricaoBot" rows="4" placeholder="💬 Escreva como se falasse com o cliente: 'Olá! 👋 Somos o Café Express, nosso horário é das 08:00 às 16:00.'"></textarea>
+
+                    <div id="btnStep3" style="margin-top:10px;">
+                        <button type="button" class="btn-voltar">Voltar</button>
+                        <button type="submit" class="btn-add">Salvar Bot</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
 
 
 
@@ -231,20 +238,20 @@
                 <label for="editNomeBot">Nome do Bot</label>
                 <input type="text" id="editNomeBot" required>
 
-                <label for="editFuncaoBot">Função do Bot</label>
+                <label for="editFuncaoBot">Pergunta:</label>
                 <select id="editFuncaoBot" required>
-                    <option value="">Selecione...</option>
-                    <option value="outra">Criar Função</option>
+                    <option value="">Selecione uma opção...</option>
+                    <option value="outra">Criar uma função:</option>
                     <option value="horario">Horário de funcionamento</option>
-                    <option value="preco">Preço dos produtos / serviços</option>
+                    <option value="preco">Preço dos produtos ou serviços</option>
                     <option value="contato">Informações de contato</option>
                     <option value="endereco">Endereço da empresa</option>
-                    <option value="pagamento">Formas de pagamento</option>
-                    <option value="entrega">Prazo e formas de entrega</option>
-                    <option value="troca">Política de troca e devolução</option>
+                    <option value="pagamento">Formas de pagamento aceitas</option>
+                    <option value="entrega">Informar prazo e formas de entrega</option>
+                    <option value="troca">Detalhar política de troca e devolução</option>
                     <option value="promocao">Promoções e ofertas</option>
                     <option value="produto">Informações sobre produtos</option>
-                    <option value="garantia">Garantia e assistência</option>
+                    <option value="garantia">Esclarecer garantia e assistência técnica</option>
                 </select>
 
                 <!-- Campo extra escondido -->
@@ -252,7 +259,7 @@
                     style="display:none; margin-top:8px;">
 
 
-                <label for="editDescricaoBot">Treinar com IA dados da empresa</label>
+                <label for="editDescricaoBot">Respostar do bot:</label>
                 <textarea id="editDescricaoBot" rows="4"></textarea>
 
                 <label for="editStatusBot">Status</label>
@@ -274,10 +281,9 @@
     <script type="module" src="/my-bd/firebase-config.js"></script>
     <script type="module" src="/my-app/app/js/main.js"></script>
     <script src="/my-app/app/js/modalBot.js"></script>
-    <script src="/my-app/app/js/ajuda.js"></script>
     <script src="/my-app/app/js/menuHamburguer.js"></script>
     <script src="/my-app/app/js/botoes.js"></script>
-    
+
 </body>
 
 </html>
