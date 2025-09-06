@@ -10,6 +10,7 @@
 body {
     background: #f6f8fa;
     color: #24292f;
+    overflow-y: hidden; /* pro body não gerar barra extra */
 }
 
 /* HEADER */
@@ -22,15 +23,18 @@ header {
     color: #fff;
 }
 
+
 header .logo-container {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
+
 #logo-text {
     font-weight: 100;
 }
+
 
 .buscarNotificacoes {
     display: flex;
@@ -89,12 +93,14 @@ header input[type="search"] {
 .main {
     flex: 1;
     padding: 20px;
+    
 }
 
 .header-main {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-top: 8px;
 }
 
 .botoesAddLinkChat {
@@ -177,7 +183,22 @@ header input[type="search"] {
     font-size: 1.5rem;
 }
 
-/* TABELA */
+/* Container da tabela com altura fixa para scroll */
+.tabela-bots {
+    max-height:500px; /* altura desejada do scroll */
+    overflow-y: auto;
+    display: block; /* necessário para tbody scroll */
+}
+
+/* Mantém o cabeçalho fixo */
+.tabela-bots table thead th {
+    position: sticky;
+    top: 0;
+    background: #fff; /* mesma cor do cabeçalho */
+    z-index: 2;
+}
+
+/* Estilo da tabela existente */
 .tabela-bots table {
     width: 100%;
     border-collapse: collapse;
@@ -185,6 +206,11 @@ header input[type="search"] {
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Opcional: linhas da tabela */
+.tabela-bots table tbody tr {
+    border-bottom: 1px solid #eee;
 }
 
 .tabela-bots th,
@@ -418,6 +444,27 @@ label {
     font-size: 12px;
     color: #797979;
 }
+
+.input-error {
+  border: 2px solid #dc3545 !important;
+  background: #ffe6e6 !important;
+}
+
+/* Efeito de borda para input inválido */
+.input-error {
+  border: 2px solid #dc3545 !important;
+  animation: shake 0.3s;
+}
+
+/* Pequeno efeito de shake */
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  50% { transform: translateX(4px); }
+  75% { transform: translateX(-4px); }
+  100% { transform: translateX(0); }
+}
+
 
 /* Responsivo - mesma lógica da tabela de bots */
 @media screen and (max-width: 768px) {

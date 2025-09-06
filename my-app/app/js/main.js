@@ -55,6 +55,12 @@ function showToast(message, type = "success", duration = 4000) {
   }, duration);
 }
 
+// ---------- HIGHLIGHT INPUT ----------
+function marcarInputInvalido(input) {
+  input.classList.add("input-error");
+  setTimeout(() => input.classList.remove("input-error"), 2000);
+}
+
 // ---------- SELETORES ----------
 const tabelaBots = document.querySelector(".tabela-bots tbody");
 const btnAdd = document.querySelector(".btn-add");
@@ -83,11 +89,9 @@ const templates = [
   {
     id: "restaurante",
     nome: "Restaurante",
-    funcao: "Atendimento Restaurante",
+    funcao: "Qual é o horário de funcionamento",
     descricao: [
-      "Olá! Funcionamos de 10h às 22h todos os dias. 🍽️",
-      "Hoje no cardápio temos: lasanha, estrogonofe e salada Caesar. 😋",
-      "Quer saber das promoções? Nosso Happy Hour é das 18h às 20h: 50% em drinks selecionados! 🍹"
+      "Oi! 😄 Que bom te ver por aqui! Nosso restaurante está aberto todos os dias, das 10h às 22h. 🍽️ Passa quando quiser, vamos adorar te receber e te mostrar nossas delícias!",
     ]
   },
   {
@@ -138,9 +142,7 @@ function adicionarLinhaTabela(nome, status, funcao, mensagens, id) {
 }
 
 // ---------- LINK PÚBLICO ----------
-const linkPublicoSidebar = document.getElementById("link-publico");
-linkPublicoSidebar?.addEventListener("click", async (e) => {
-  e.preventDefault();
+async function gerarLinkPublico() {
   const uid = auth.currentUser?.uid;
   if (!uid) {
     showToast("Usuário não logado.", "error");
@@ -154,6 +156,11 @@ linkPublicoSidebar?.addEventListener("click", async (e) => {
     console.error(err);
     showToast("Não foi possível copiar o link.", "error");
   }
+}
+
+document.getElementById("link-publico")?.addEventListener("click", (e) => {
+  e.preventDefault();
+  gerarLinkPublico();
 });
 
 // ---------- CARDS ----------
@@ -208,7 +215,7 @@ async function abrirModalEditar(id) {
     document.getElementById("editNomeBot").value = bot.nome;
     document.getElementById("editFuncaoBot").value = bot.funcao || "";
     document.getElementById("editDescricaoBot").value = bot.descricao || "";
-    document.getElementById("editStatusBot").value = bot.status || "Ativo";
+    document.getElementById("editStatusBot").value = bot.status ?? "Ativo";
     modalEditar.style.display = "flex";
   }
 }
@@ -247,6 +254,13 @@ function confirmModal(message) {
 
     overlay.appendChild(box);
     document.body.appendChild(overlay);
+
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) {
+        overlay.remove();
+        resolve(false);
+      }
+    });
 
     box.querySelector("#confirm-yes").addEventListener("click", () => {
       overlay.remove();
@@ -291,14 +305,14 @@ onAuthStateChanged(auth, user => {
     snapshot.forEach(docSnap => {
       const bot = docSnap.data();
       const mensagens = (bot.mensagens || 0) + (bot.usuariosMensagens || 0);
-      adicionarLinhaTabela(bot.nome, bot.status, bot.funcao, mensagens, docSnap.id);
+      adicionarLinhaTabela(bot.nome, bot.status ?? "Ativo", bot.funcao, mensagens, docSnap.id);
 
       listaDeBots.push({
         id: docSnap.id,
         nome: bot.nome,
         funcao: bot.funcao,
         mensagens,
-        status: bot.status
+        status: bot.status ?? "Ativo"
       });
     });
 
@@ -317,7 +331,7 @@ buscarInput?.addEventListener("input", () => {
   });
 });
 
-// ---------- WIZARD DE CRIAR BOT (ZERO) ----------
+// ---------- WIZARD DE CRIAR BOT ----------
 const steps = document.querySelectorAll("#modal-criar-bot .step");
 let currentStep = 0;
 
@@ -348,72 +362,191 @@ funcaoSelect?.addEventListener("change", () => {
 });
 
 document.getElementById("editFuncaoBot")?.addEventListener("change", (e) => {
-    const customInput = document.getElementById("editFuncaoBotCustom");
-    if (e.target.value === "outra") {
-        customInput.style.display = "block";
-        customInput.required = true;
-    } else {
-        customInput.style.display = "none";
-        customInput.required = false;
-    }
+  const customInput = document.getElementById("editFuncaoBotCustom");
+  if (e.target.value === "outra") {
+    customInput.style.display = "block";
+    customInput.required = true;
+  } else {
+    customInput.style.display = "none";
+    customInput.required = false;
+  }
 });
 
 // ---------- CRIAR BOT ----------
 formCriarBot?.addEventListener("submit", async (e) => {
   e.preventDefault();
-  const nome = document.getElementById("nomeBot").value.trim();
+
+  const nomeInput = document.getElementById("nomeBot");
   const funcaoSelect = document.getElementById("funcaoBot");
+  const funcaoCustomInput = document.getElementById("funcaoBotCustom");
+  const descricaoInput = document.getElementById("descricaoBot");
+
+  let nome = nomeInput.value.trim();
+  // pega o texto visível do select
   let funcao = funcaoSelect.selectedOptions[0].text;
-  const descricao = document.getElementById("descricaoBot").value.trim();
+  let descricao = descricaoInput.value.trim().replace(/\s+/g, " ");
 
+  // Se a função for "outra", pega do input customizado
   if (funcaoSelect.value === "outra") {
-    funcao = document.getElementById("funcaoBotCustom").value.trim();
-  }
-  if (!nome || !funcao || !descricao) {
-    showToast("Preencha todos os campos!", "error");
-    return;
+    funcao = funcaoCustomInput.value.trim();
   }
 
+  // ---------- VERIFICAR CAMPOS ----------
+  let camposInvalidos = false;
+
+  // nome
+  if (!nome) {
+    inputInvalido(nomeInput);
+    camposInvalidos = true;
+  }
+
+  // função
+  if (!funcao) {
+    inputInvalido(funcaoSelect.value === "outra" ? funcaoCustomInput : funcaoSelect);
+    camposInvalidos = true;
+  }
+
+  // descrição
+  if (!descricao) {
+    inputInvalido(descricaoInput);
+    camposInvalidos = true;
+  }
+
+  if (camposInvalidos) {
+    showToast("⚠️ Ops! Preencha todos os campos obrigatórios antes de criar o bot.", "error");
+    return; // modal permanece aberto
+  }
+
+  // ---------- CRIAR BOT ----------
   const uid = auth.currentUser.uid;
   try {
     await addDoc(collection(db, "bots"), {
-      uid, nome, funcao, descricao,
-      status: "Ativo", mensagens: 0, usuariosMensagens: 0
+      uid,
+      nome,
+      funcao,
+      descricao,
+      status: "Ativo",
+      mensagens: 0,
+      usuariosMensagens: 0
     });
     showToast("Bot criado com sucesso!");
     formCriarBot.reset();
     document.getElementById("modal-criar-bot").style.display = "none";
   } catch (e) {
     console.error(e);
-    showToast("Erro ao criar bot.", "error");
+    showToast("Erro ao criar bot. Tente novamente.", "error");
   }
 });
+
+
+// ---------- ADICIONAR URL NO TEXTAREA DO PASSO 3 ----------
+const descricaoBot = document.getElementById("descricaoBot");
+const btnAddLink = document.getElementById("btnAddLink");
+
+btnAddLink?.addEventListener("click", () => {
+    const link = prompt("Digite a URL do link:");
+    if (!link) return;
+
+    // Insere a URL na posição atual do cursor
+    const start = descricaoBot.selectionStart;
+    const end = descricaoBot.selectionEnd;
+    const textoAtual = descricaoBot.value;
+
+    descricaoBot.value = textoAtual.slice(0, start) + link + textoAtual.slice(end);
+
+    // Move o cursor para depois da URL
+    descricaoBot.selectionStart = descricaoBot.selectionEnd = start + link.length;
+    descricaoBot.focus();
+});
+
+
+
+
+// ---------- FUNÇÃO DE HIGHLIGHT/PISTAR INPUT ----------
+function inputInvalido(input) {
+  if (!input) return;
+  input.classList.add("input-error");
+
+  let count = 0;
+  const interval = setInterval(() => {
+    input.classList.toggle("input-error");
+    count++;
+    if (count >= 6) clearInterval(interval); // 3 piscadas
+  }, 300);
+}
+
+
 
 // ---------- TEMPLATE SELECTION ----------
+// ---------- TEMPLATE SELECTION CORRIGIDO ----------
 document.getElementById("templateBot")?.addEventListener("change", (e) => {
   const selectedTemplate = templates.find(t => t.id === e.target.value);
+  const nomeInput = document.getElementById("nomeBot");
+  const funcaoSelect = document.getElementById("funcaoBot");
+  const funcaoCustomInput = document.getElementById("funcaoBotCustom");
+  const descricaoInput = document.getElementById("descricaoBot");
+
   if (selectedTemplate) {
-    document.getElementById("nomeBot").value = `Bot ${selectedTemplate.nome}`;
-    document.getElementById("funcaoBot").value = selectedTemplate.funcao;
-    document.getElementById("descricaoBot").value = selectedTemplate.descricao;
+    // Preenche nome
+    nomeInput.value = `Bot ${selectedTemplate.nome}`;
+
+    // Verifica se a função existe no select
+    let optionExistente = Array.from(funcaoSelect.options).find(
+      opt => opt.text === selectedTemplate.funcao
+    );
+
+    if (optionExistente) {
+      // Se existir, seleciona a opção e esconde input customizado
+      funcaoSelect.value = optionExistente.value;
+      funcaoCustomInput.style.display = "none";
+      funcaoCustomInput.value = "";
+      funcaoCustomInput.required = false;
+    } else {
+      // Se não existir, seleciona "outra" e mostra input customizado
+      funcaoSelect.value = "outra";
+      funcaoCustomInput.style.display = "block";
+      funcaoCustomInput.value = selectedTemplate.funcao;
+      funcaoCustomInput.required = true;
+    }
+
+    // Preenche descrição
+    descricaoInput.value = selectedTemplate.descricao.join("\n");
   } else {
-    document.getElementById("nomeBot").value = "";
-    document.getElementById("funcaoBot").value = "";
-    document.getElementById("descricaoBot").value = "";
+    // Se nenhum template selecionado, limpa tudo
+    nomeInput.value = "";
+    funcaoSelect.value = "";
+    funcaoCustomInput.style.display = "none";
+    funcaoCustomInput.value = "";
+    funcaoCustomInput.required = false;
+    descricaoInput.value = "";
   }
 });
 
-// ---------- EDITAR BOT ----------
+
 formEditarBot?.addEventListener("submit", async (e) => {
   e.preventDefault();
   const id = document.getElementById("editBotId").value;
-  const nome = document.getElementById("editNomeBot").value.trim();
+  const nomeInput = document.getElementById("editNomeBot");
   const funcaoSelect = document.getElementById("editFuncaoBot");
-  let funcao = funcaoSelect.selectedOptions[0].text;
-  const descricao = document.getElementById("editDescricaoBot").value.trim();
-  const status = document.getElementById("editStatusBot").value;
+  const funcaoCustomInput = document.getElementById("editFuncaoBotCustom");
+  const descricaoInput = document.getElementById("editDescricaoBot");
+  const statusInput = document.getElementById("editStatusBot");
 
-  if (funcaoSelect.value === "outra") funcao = document.getElementById("editFuncaoBotCustom").value.trim();
+  let nome = nomeInput.value.trim();
+  let funcao = funcaoSelect.selectedOptions[0].text; // <--- pega texto visível
+  let descricao = descricaoInput.value.trim().replace(/\s+/g, " ");
+  let status = statusInput.value || "Ativo";
+
+  // Se for "outra", pega do input customizado
+  if (funcaoSelect.value === "outra") {
+    funcao = funcaoCustomInput.value.trim();
+  }
+
+  // Validação
+  if (!nome) marcarInputInvalido(nomeInput);
+  if (!funcao) marcarInputInvalido(funcaoSelect.value === "outra" ? funcaoCustomInput : funcaoSelect);
+  if (!descricao) marcarInputInvalido(descricaoInput);
+
   if (!nome || !funcao || !descricao) {
     showToast("⚠️ Preencha todos os campos!", "error");
     return;
@@ -429,6 +562,8 @@ formEditarBot?.addEventListener("submit", async (e) => {
   }
 });
 
+
+
 // ---------- MODAIS ----------
 document.querySelector(".close-edit")?.addEventListener("click", () => { if (modalEditar) modalEditar.style.display = "none"; });
 btnAdd?.addEventListener("click", () => {
@@ -443,17 +578,6 @@ document.querySelector(".close")?.addEventListener("click", () => {
   if (modalCriar) modalCriar.style.display = "none";
 });
 
-// ---------- LINKS PÚBLICOS ----------
-function gerarLinkPublico() {
-  const uid = auth.currentUser.uid;
-  const link = `${window.location.origin}/my-app/app/html/chat.html?uid=${uid}`;
-  navigator.clipboard.writeText(link)
-    .then(() => showToast("Link público copiado!"))
-    .catch(err => {
-      console.error(err);
-      showToast("Erro ao copiar link.", "error");
-    });
-}
 
 // ---------- LOGOUT ----------
 document.getElementById("btn-logout")?.addEventListener("click", async (e) => {
@@ -466,6 +590,10 @@ document.getElementById("btn-logout")?.addEventListener("click", async (e) => {
     showToast("Não foi possível sair.", "error");
   }
 });
+// ---------- RESPONSIVIDADE ----------
+function checkResponsividade() {
+  atualizarBotsCards(listaDeBots);
+}
 
-// ---------- REDIMENSIONAMENTO ----------
-window.addEventListener("resize", () => atualizarBotsCards(listaDeBots));
+window.addEventListener("resize", checkResponsividade);
+checkResponsividade();

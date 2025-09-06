@@ -143,6 +143,7 @@
             <form id="form-criar-bot">
                 <!-- STEP 1: Escolher Template e Nome -->
                 <div class="step active">
+                    <!--
                     <label for="templateBot"><strong>Escolher templete ou digite o nome bot:</strong></label>
                     <label for="templateBot">Escolher Template</label>
                     <select id="templateBot">
@@ -150,33 +151,32 @@
                         <option value="restaurante">Restaurante</option>
                         <option value="ecommerce">E-commerce</option>
                     </select>
-
-
-
+                    -->
                     <label for="nomeBot">Nome do Bot:</label>
-                    <input type="text" id="nomeBot" placeholder="Ex: Suporte IA" required>
+                    <input type="text" id="nomeBot" placeholder="Ex: Horario de funcionamento">
 
                     <button type="button" class="btn-proximo">Próximo</button>
                 </div>
 
                 <!-- STEP 2: Função -->
                 <div class="step">
-                    
-                    <label for="funcaoBot"><p id="txtInfoStep2">Explique de forma simples, fale como se fosse o cliente fazendo uma pergunata:</p></label>
+
+                    <label for="funcaoBot">
+                        <p id="txtInfoStep2">Explique de forma simples, fale como se fosse o cliente fazendo uma
+                            pergunta ou tirando uma duvida:</p>
+                    </label>
                     <label for="funcaoBot">Pergunata:</label>
-                    <select id="funcaoBot" required>
-                        <option value="">Selecione uma opção...</option>
-                        <option value="outra">Criar uma função:</option>
+                    <select id="funcaoBot">
+                        <option value="" selected>Selecione uma opção...</option>
+                        <option value="outra" style="font-weight: bold; color: #fff; background-color: #ff4500;">
+                            Criar uma função
+                        </option>
                         <option value="horario">Horário de funcionamento</option>
-                        <option value="preco">Preço dos produtos ou serviços</option>
                         <option value="contato">Informações de contato</option>
-                        <option value="endereco">Endereço da empresa</option>
+                        <option value="endereco">Endereço/Localização</option>
                         <option value="pagamento">Formas de pagamento aceitas</option>
                         <option value="entrega">Informar prazo e formas de entrega</option>
-                        <option value="troca">Detalhar política de troca e devolução</option>
                         <option value="promocao">Promoções e ofertas</option>
-                        <option value="produto">Informações sobre produtos</option>
-                        <option value="garantia">Esclarecer garantia e assistência técnica</option>
                     </select>
 
 
@@ -192,8 +192,14 @@
                 <!-- STEP 3: Descrição -->
                 <div class="step" id="step3">
                     <label for="descricaoBot">Resposta do Bot</label>
-                    <textarea id="descricaoBot" rows="4" placeholder="💬 Escreva como se falasse com o cliente: 'Olá! 👋 Somos o Café Express, nosso horário é das 08:00 às 16:00.'"></textarea>
+                    <textarea id="descricaoBot" rows="16"
+                        placeholder="💬 Escreva como se falasse com o cliente: 'Olá! 👋 Somos o Café Express, nosso horário é das 08:00 às 16:00.'"></textarea>
 
+                    <!-- Botão para adicionar link -->
+                    <div style="margin-top:5px;">
+                        <button type="button" id="btnAddLink">Adicionar Link</button>
+                    </div>
+                    
                     <div id="btnStep3" style="margin-top:10px;">
                         <button type="button" class="btn-voltar">Voltar</button>
                         <button type="submit" class="btn-add">Salvar Bot</button>
@@ -240,18 +246,16 @@
 
                 <label for="editFuncaoBot">Pergunta:</label>
                 <select id="editFuncaoBot" required>
-                    <option value="">Selecione uma opção...</option>
-                    <option value="outra">Criar uma função:</option>
+                    <option value="" selected>Selecione uma opção...</option>
+                    <option value="outra" style="font-weight: bold; color: #fff; background-color: #ff4500;">
+                        Criar uma função
+                    </option>
                     <option value="horario">Horário de funcionamento</option>
-                    <option value="preco">Preço dos produtos ou serviços</option>
-                    <option value="contato">Informações de contato</option>
-                    <option value="endereco">Endereço da empresa</option>
-                    <option value="pagamento">Formas de pagamento aceitas</option>
+                    <option value="contato">Informações de contato </option>
+                    <option value="endereco">Endereço/Localização </option>
+                    <option value="pagamento">Formas de pagamento aceitas </option>
                     <option value="entrega">Informar prazo e formas de entrega</option>
-                    <option value="troca">Detalhar política de troca e devolução</option>
                     <option value="promocao">Promoções e ofertas</option>
-                    <option value="produto">Informações sobre produtos</option>
-                    <option value="garantia">Esclarecer garantia e assistência técnica</option>
                 </select>
 
                 <!-- Campo extra escondido -->
@@ -272,9 +276,6 @@
             </form>
         </div>
     </div>
-
-
-
 
 
     <!-- JS -->
