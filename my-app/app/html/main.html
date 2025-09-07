@@ -51,6 +51,11 @@
         <!-- SIDEBAR -->
         <aside class="sidebar">
             <nav>
+                <div class="user-info">
+                    <i class="fa-solid fa-user"></i>
+                    <span id="nomeUsuario">Carregando...</span>
+                </div>
+
                 <ul>
                     <li><a href="#"><i class="fa-solid fa-robot"></i> Meus Bots</a></li>
                     <li><a href="/my-app/app/html/grafico.html"><i class="fa-solid fa-chart-line"></i> Relatórios</a>
@@ -60,7 +65,7 @@
                     </li>
 
                     <li><a href="#" id="btn-logout">Sair</a></li>
-                    <li><a href="#"><i class="fa-solid fa-gear"></i> Configurações</a></li>
+                    <li><a href="#" id="btn-config"><i class="fa-solid fa-gear"></i> Configurações</a></li>
                 </ul>
             </nav>
         </aside>
@@ -68,7 +73,7 @@
         <!-- MAIN -->
         <main class="main">
             <section class="header-main">
-                <h2>Dashboard</h2>
+                <h2 id="dashboard">Dashboard</h2>
                 <div class="botoesAddLinkChat">
                     <button class="btn-add" id="btnAdd">Novo Bot</button>
                 </div>
@@ -131,8 +136,6 @@
     </div>
 
 
-
-
     <!-- Modal Criar Bot Atualizado com Wizard -->
     <div id="modal-criar-bot" class="modal">
         <div class="modal-content">
@@ -153,19 +156,20 @@
                     </select>
                     -->
                     <label for="nomeBot">Nome do Bot:</label>
+                    <small class="input-help">Escolha um nome claro e objetivo que descreva a função do bot, ex:
+                        "Atendimento Café" ou "Cardapio".</small>
                     <input type="text" id="nomeBot" placeholder="Ex: Horario de funcionamento">
-
                     <button type="button" class="btn-proximo">Próximo</button>
                 </div>
 
                 <!-- STEP 2: Função -->
                 <div class="step">
 
-                    <label for="funcaoBot">
-                        <p id="txtInfoStep2">Explique de forma simples, fale como se fosse o cliente fazendo uma
-                            pergunta ou tirando uma duvida:</p>
-                    </label>
+                    <label for="funcaoBot"></label>
                     <label for="funcaoBot">Pergunata:</label>
+                    <small id="txtInfoStep2">Descreva como o cliente faria a pergunta ou tiraria uma dúvida.
+                        <br>Ex: "Quais são os horários de atendimento?"
+                        <br>Ex: "Quais são os preços do serviço?"</small>
                     <select id="funcaoBot">
                         <option value="" selected>Selecione uma opção...</option>
                         <option value="outra" style="font-weight: bold; color: #fff; background-color: #ff4500;">
@@ -180,7 +184,7 @@
                     </select>
 
 
-                    <input type="text" id="funcaoBotCustom" placeholder="Digite a função do bot"
+                    <input type="text" id="funcaoBotCustom" placeholder="Digite a Pergunta"
                         style="display:none; margin-top:8px;">
 
                     <div style="margin-top:10px;">
@@ -191,15 +195,16 @@
 
                 <!-- STEP 3: Descrição -->
                 <div class="step" id="step3">
-                    <label for="descricaoBot">Resposta do Bot</label>
+                    <div class="botAddLInk">
+                        <label for="descricaoBot">Resposta do Bot</label>
+                        <!-- Botão para adicionar link -->
+                        <div style="margin-top:5px;">
+                            <button type="button" id="btnAddLink">Adicionar Link</button>
+                        </div>
+                    </div>
                     <textarea id="descricaoBot" rows="16"
                         placeholder="💬 Escreva como se falasse com o cliente: 'Olá! 👋 Somos o Café Express, nosso horário é das 08:00 às 16:00.'"></textarea>
 
-                    <!-- Botão para adicionar link -->
-                    <div style="margin-top:5px;">
-                        <button type="button" id="btnAddLink">Adicionar Link</button>
-                    </div>
-                    
                     <div id="btnStep3" style="margin-top:10px;">
                         <button type="button" class="btn-voltar">Voltar</button>
                         <button type="submit" class="btn-add">Salvar Bot</button>
@@ -276,6 +281,24 @@
             </form>
         </div>
     </div>
+
+
+    <!-- Modal Configurações Moderno -->
+    <div id="modal-configuracoes" class="modal-modern">
+        <div class="modal-content-modern">
+            <button class="close-config">&times;</button>
+            <h2>Configurações da Conta</h2>
+            <form id="form-configuracoes">
+                <label for="configNome">Alterar o Nome de Usuario</label>
+                <input type="text" id="configNome" placeholder="Digite seu nome">
+
+                <button type="submit" class="btn-modern">Salvar Alterações</button>
+            </form>
+
+        </div>
+    </div>
+
+
 
 
     <!-- JS -->

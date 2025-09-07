@@ -13,29 +13,30 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
+  padding: 10px; /* espaço interno para telas pequenas */
 }
 
 .auth-container {
   background-color: #fff;
-  padding: 40px 30px;
-  border-radius: 8px;
-  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.1);
+  padding: 35px 25px; /* ajustado */
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 380px;
 }
 
 .auth-container h1 {
   text-align: center;
-  margin-bottom: 25px;
-  font-size: 28px;
+  margin-bottom: 20px; /* reduzido */
+  font-size: 26px;
   font-weight: 600;
   color: #24292f;
 }
 
 .auth-container h2 {
   text-align: center;
-  margin-bottom: 20px;
-  font-size: 20px;
+  margin-bottom: 15px; /* reduzido */
+  font-size: 18px;
   font-weight: 500;
   color: #24292f;
 }
@@ -43,11 +44,11 @@ body {
 form {
   display: flex;
   flex-direction: column;
+  gap: 12px; /* espaçamento consistente entre inputs */
 }
 
 input {
   padding: 12px 15px;
-  margin-bottom: 15px;
   border-radius: 6px;
   border: 1px solid #d1d5da;
   font-size: 14px;
@@ -70,6 +71,7 @@ button {
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
+  margin-top: 8px; /* separa do input anterior */
 }
 
 button:hover {
@@ -80,6 +82,7 @@ p {
   text-align: center;
   font-size: 13px;
   color: #586069;
+  margin-top: 12px; /* separação do form */
 }
 
 p a {
@@ -93,52 +96,63 @@ p a:hover {
 
 /* Container de toasts */
 #toast-container {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 9999;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* reduzido */
 }
 
 /* Toast básico */
 .toast {
-    min-width: 250px;
-    max-width: 400px;
-    padding: 14px 20px;
-    border-radius: 8px;
-    font-size: 14px;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    opacity: 0;
-    transform: translateY(-20px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    font-family: 'Poppins', sans-serif;
+  min-width: 250px;
+  max-width: 400px;
+  padding: 12px 18px; /* ajustado */
+  border-radius: 8px;
+  font-size: 14px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  opacity: 0;
+  transform: translateY(-20px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Tipos de toast */
 .toast.success {
-    background-color: #28a745; /* verde */
+  background-color: #28a745;
 }
 
 .toast.error {
-    background-color: #dc3545; /* vermelho */
+  background-color: #dc3545;
 }
 
 /* Quando aparecer */
 .toast.show {
-    opacity: 1;
-    transform: translateY(0);
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* Responsivo */
 @media (max-width: 420px) {
   .auth-container {
-    padding: 30px 20px;
+    padding: 25px 15px; /* reduzido */
+  }
+
+  form {
+    gap: 10px;
+  }
+
+  button {
+    margin-top: 6px;
+  }
+
+  p {
+    margin-top: 10px;
   }
 }

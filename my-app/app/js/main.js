@@ -5,6 +5,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
+
 // ---------- FUNÇÃO DE TOAST ----------
 function showToast(message, type = "success", duration = 4000) {
   let container = document.getElementById("toast-container");
@@ -594,6 +595,100 @@ document.getElementById("btn-logout")?.addEventListener("click", async (e) => {
 function checkResponsividade() {
   atualizarBotsCards(listaDeBots);
 }
+
+// ---------- ELEMENTOS ----------
+const nomeUsuarioSpan = document.getElementById("nomeUsuario");
+const btnConfig = document.getElementById("btn-config");
+const modalConfig = document.getElementById("modal-configuracoes");
+const closeConfig = document.querySelector(".close-config");
+const formConfig = document.getElementById("form-configuracoes");
+const inputNome = document.getElementById("configNome");
+const btnAdicionarBot = document.getElementById("btnAdd");
+const dashboard = document.getElementById("dashboard");
+
+// Seções de bots
+const tabelaBotsSection = document.querySelector(".tabela-bots");
+const cardsSection = document.querySelector(".cards");
+
+let nomeAtual = ""; // guarda o nome atual para placeholder
+
+// ---------- ATUALIZAÇÃO EM TEMPO REAL DO NOME NO MENU ----------
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    const docRef = doc(db, "usuarios", user.uid);
+
+    // Listener em tempo real
+    onSnapshot(docRef, (docSnap) => {
+      nomeAtual = user.email.split('@')[0]; // default
+      if (docSnap.exists()) nomeAtual = docSnap.data().nome || nomeAtual;
+
+      let primeiroNome = nomeAtual.split(' ')[0];
+      if (primeiroNome.length > 12) primeiroNome = primeiroNome.slice(0, 12) + '...';
+
+      nomeUsuarioSpan.textContent = primeiroNome;
+    });
+  } else {
+    nomeUsuarioSpan.textContent = "Visitante";
+    nomeAtual = "";
+  }
+});
+
+// ---------- FUNÇÃO PARA VOLTAR À TELA DE BOTS ----------
+function voltarParaBots() {
+  if (tabelaBotsSection) tabelaBotsSection.style.display = "block";
+  if (cardsSection) cardsSection.style.display = "flex";
+  if(btnAdicionarBot) btnAdicionarBot.style.display = "flex"
+  if(dashboard) dashboard.textContent = "Dashboard"
+}
+
+// ---------- FUNÇÃO PARA FECHAR MODAL ----------
+function fecharModalConfig() {
+  modalConfig.style.display = "none";
+  voltarParaBots();
+}
+
+// ---------- ABRIR MODAL DE CONFIGURAÇÕES ----------
+btnConfig.addEventListener("click", (e) => {
+  e.preventDefault();
+  inputNome.value = ""; // input vazio
+  inputNome.placeholder = nomeAtual; // placeholder com nome atual
+  modalConfig.style.display = "flex";
+
+  // Esconde a tela de bots enquanto o modal está aberto
+  if (tabelaBotsSection) tabelaBotsSection.style.display = "none";
+  if (cardsSection) cardsSection.style.display = "none";
+  if(dashboard) dashboard.textContent = "Configurações"
+});
+
+// ---------- FECHAR MODAL ----------
+closeConfig.addEventListener("click", fecharModalConfig);
+window.addEventListener("click", (e) => {
+  if (e.target === modalConfig) fecharModalConfig();
+});
+
+// ---------- SALVAR ALTERAÇÕES NO FIRESTORE ----------
+formConfig.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const user = auth.currentUser;
+  if (!user) return;
+
+  if (!inputNome.value) {
+    showToast("Digite um novo nome para atualizar.", "error");
+    return;
+  }
+
+  try {
+    const docRef = doc(db, "usuarios", user.uid);
+    await updateDoc(docRef, { nome: inputNome.value });
+
+    // O menu lateral será atualizado automaticamente pelo onSnapshot
+    showToast("Nome atualizado com sucesso!", "success");
+    fecharModalConfig(); // fecha o modal e volta para a tela de bots
+  } catch (error) {
+    console.error("Erro ao atualizar o nome:", error);
+    showToast("Erro ao atualizar o nome. Tente novamente.", "error");
+  }
+});
 
 window.addEventListener("resize", checkResponsividade);
 checkResponsividade();

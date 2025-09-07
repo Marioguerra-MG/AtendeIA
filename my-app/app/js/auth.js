@@ -1,6 +1,8 @@
 // ---------- IMPORTS ----------
 import { auth } from '/my-bd/firebase-config.js';
-import { signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import { signInWithEmailAndPassword, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
+
 
 // ---------- FUNÇÃO DE TOAST ----------
 function showToast(message, type = "success", duration = 4000) {
@@ -91,6 +93,46 @@ if (formLogin) {
                 mensagem = "Muitas tentativas falhas. Tente novamente mais tarde.";
             } else {
                 mensagem = "Não foi possível efetuar o login. Verifique se seu e-mail e senha estão corretos.";
+            }
+
+            showToast(mensagem, "error");
+        }
+    });
+}
+
+// ---------- ESQUECI A SENHA ----------
+const btnEsqueciSenha = document.getElementById("esqueciSenha");
+if (btnEsqueciSenha) {
+    btnEsqueciSenha.addEventListener("click", async (e) => {
+        e.preventDefault();
+
+        const email = document.getElementById("loginEmail").value.trim();
+
+        if (!email) {
+            showToast("Digite seu e-mail no campo antes de solicitar a redefinição.", "error");
+            return;
+        }
+
+        try {
+            await sendPasswordResetEmail(auth, email);
+
+            // Primeiro toast
+            showToast("Email de redefinição enviado! Verifique sua caixa de entrada ou a pasta SPAM.", "success");
+
+            // Segundo toast com 1s de atraso
+            setTimeout(() => {
+                showToast("E-mail enviado! Confira também sua pasta SPAM.", "success");
+            }, 1000);
+        } catch (error) {
+            console.error("Erro ao enviar reset:", error.code);
+            let mensagem;
+
+            if (error.code === "auth/user-not-found") {
+                mensagem = "Usuário não encontrado. Verifique o e-mail.";
+            } else if (error.code === "auth/invalid-email") {
+                mensagem = "E-mail inválido. Digite corretamente.";
+            } else {
+                mensagem = "Erro ao enviar email de redefinição. Tente novamente.";
             }
 
             showToast(mensagem, "error");
