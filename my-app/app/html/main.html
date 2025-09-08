@@ -53,19 +53,19 @@
             <nav>
                 <div class="user-info">
                     <i class="fa-solid fa-user"></i>
-                    <span id="nomeUsuario">Carregando...</span>
                 </div>
 
                 <ul>
                     <li><a href="#"><i class="fa-solid fa-robot"></i> Meus Bots</a></li>
+                    <!--
                     <li><a href="/my-app/app/html/grafico.html"><i class="fa-solid fa-chart-line"></i> Relatórios</a>
                     </li>
+                    -->
                     <li>
                         <a href="#" id="link-publico"><i class="fa-solid fa-link"></i>Copiar Meu Link</a>
                     </li>
-
+                  
                     <li><a href="#" id="btn-logout">Sair</a></li>
-                    <li><a href="#" id="btn-config"><i class="fa-solid fa-gear"></i> Configurações</a></li>
                 </ul>
             </nav>
         </aside>
@@ -86,6 +86,7 @@
                     <h3>Total de Bots</h3>
                     <p>0</p>
                 </div>
+                <!--
                 <div class="card">
                     <h3>Mensagens Enviadas</h3>
                     <p>0</p>
@@ -94,6 +95,7 @@
                     <h3>Plano</h3>
                     <p>Pro</p>
                 </div>
+                -->
             </section>
 
             <!-- TABELA DE BOTS -->
@@ -105,7 +107,6 @@
                             <th>Nome-Bot</th>
                             <th>Status</th>
                             <th>Função</th>
-                            <th>Mensagens</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
@@ -117,20 +118,6 @@
                 <div class="bots-cards">
                     <!-- Cards serão gerados via JS em telas pequenas -->
                 </div>
-            </section>
-
-            <!-- TABELA DE LINKS -->
-            <section class="tabela-links" style="display: none;">
-                <h2>Meus Links</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Nome</th>
-                            <th>URL</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tbody-links"></tbody>
-                </table>
             </section>
         </main>
     </div>
@@ -146,15 +133,6 @@
             <form id="form-criar-bot">
                 <!-- STEP 1: Escolher Template e Nome -->
                 <div class="step active">
-                    <!--
-                    <label for="templateBot"><strong>Escolher templete ou digite o nome bot:</strong></label>
-                    <label for="templateBot">Escolher Template</label>
-                    <select id="templateBot">
-                        <option value="">Selecione um template...</option>
-                        <option value="restaurante">Restaurante</option>
-                        <option value="ecommerce">E-commerce</option>
-                    </select>
-                    -->
                     <label for="nomeBot">Nome do Bot:</label>
                     <small class="input-help">Escolha um nome claro e objetivo que descreva a função do bot, ex:
                         "Atendimento Café" ou "Cardapio".</small>
@@ -282,21 +260,6 @@
         </div>
     </div>
 
-
-    <!-- Modal Configurações Moderno -->
-    <div id="modal-configuracoes" class="modal-modern">
-        <div class="modal-content-modern">
-            <button class="close-config">&times;</button>
-            <h2>Configurações da Conta</h2>
-            <form id="form-configuracoes">
-                <label for="configNome">Alterar o Nome de Usuario</label>
-                <input type="text" id="configNome" placeholder="Digite seu nome">
-
-                <button type="submit" class="btn-modern">Salvar Alterações</button>
-            </form>
-
-        </div>
-    </div>
 
       <!-- JS -->
     <script type="module" src="/my-bd/firebase-config.js"></script>

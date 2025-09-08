@@ -1,8 +1,6 @@
 // ------------------- IMPORTS -------------------
 import { db } from '/my-bd/firebase-config.js';
-import { 
-    collection, query, where, getDocs, updateDoc, increment, doc, arrayUnion, onSnapshot 
-} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+import { collection, query, where, getDocs, updateDoc, increment, doc, arrayUnion } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 // ------------------- SELETORES -------------------
 const chatContainer = document.querySelector(".chat-container");
@@ -10,183 +8,124 @@ const chatBox = document.getElementById("chatBox");
 const chatHeader = document.getElementById("chatHeader");
 
 // ------------------- NOMES ALEATÓRIOS -------------------
-const primeirosNomes = [
-    "Mario", "Lucas", "Ana", "Bruno", "Julia",
-    "Lara", "Gabriel", "Beatriz", "Rafael", "Camila",
-    "Felipe", "Carla", "Diego", "Mariana", "Thiago",
-    "Renata", "Eduardo", "Patricia", "Vinicius", "Amanda"
-];
-
-function nomeAleatorio() {
-    const indice = Math.floor(Math.random() * primeirosNomes.length);
-    return `${primeirosNomes[indice]} Guia Virtual`;
-}
+const primeirosNomes = ["Mario","Lucas","Ana","Bruno","Julia","Lara","Gabriel","Beatriz","Rafael","Camila"];
+function nomeAleatorio(){return `${primeirosNomes[Math.floor(Math.random()*primeirosNomes.length)]} Guia Virtual`;}
 
 // ------------------- UTILITÁRIOS -------------------
-function obterUIDDaURL() {
-    const params = new URLSearchParams(window.location.search);
-    return params.get("uid");
-}
+function obterUIDDaURL(){return new URLSearchParams(window.location.search).get("uid");}
+function obterSaudacao(){const h=new Date().getHours(); return h<12?"Bom dia! 👋":h<18?"Boa tarde! 🌞":"Boa noite! 🌙";}
 
-function obterSaudacao() {
-    const hora = new Date().getHours();
-    if (hora >= 5 && hora < 12) return "Bom dia! 👋";
-    if (hora >= 12 && hora < 18) return "Boa tarde! 🌞";
-    return "Boa noite! 🌙";
-}
+// ------------------- VISITANTE -------------------
+const userId = sessionStorage.getItem("visitanteId") || ("visitante_" + Math.floor(Math.random()*1000000));
+sessionStorage.setItem("visitanteId", userId);
 
-// ------------------- USER ID ÚNICO POR VISITANTE -------------------
-const userId = "visitante_" + Math.floor(Math.random() * 1000000);
-
-// ------------------- CACHE LOCAL DE USUÁRIOS -------------------
-const cacheUsuariosPorBot = {};
-
-// ------------------- TRANSFORMAR LINKS EM [SAIBA MAIS] -------------------
-function transformarLinksEmSaibaMaisElegante(texto) {
-    if (!texto) return "";
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    return texto.replace(urlRegex, url => `<a href="${url}" target="_blank" rel="noopener noreferrer">[Saiba mais]</a>`);
+// ------------------- TRANSFORMAR LINKS -------------------
+function transformarLinks(texto){
+    if(!texto) return "";
+    return texto.replace(/(https?:\/\/[^\s]+)/g,url=>`<a href="${url}" target="_blank">[Saiba mais]</a>`).replace(/\n/g,"<br>");
 }
 
 // ------------------- MENSAGENS -------------------
-function adicionarMensagemNoChat(mensagem, tipo = "usuario") {
-    const p = document.createElement("p");
+function adicionarMensagem(mensagem,tipo="usuario"){
+    const p=document.createElement("p");
     p.classList.add(tipo);
-    p.innerHTML = transformarLinksEmSaibaMaisElegante(mensagem).replace(/\n/g, "<br>");
+    p.innerHTML=transformarLinks(mensagem);
     chatBox.appendChild(p);
-    p.scrollIntoView({ behavior: "smooth", block: "start" });
+    p.scrollIntoView({behavior:"smooth",block:"start"});
 }
 
-// ------------------- Envia mensagem do usuário -------------------
-async function enviarMensagemUsuario(botId, mensagem) {
-    adicionarMensagemNoChat(mensagem, "user");
-    const botRef = doc(db, "bots", botId);
-
-    if (!cacheUsuariosPorBot[botId]) {
-        const snapshot = await getDocs(query(collection(db, "bots"), where("__name__", "==", botId)));
-        const botData = snapshot.docs[0]?.data();
-        cacheUsuariosPorBot[botId] = botData?.usuarios || [];
-    }
-
-    const jaUsuario = cacheUsuariosPorBot[botId].includes(userId);
-
-    if (!jaUsuario) {
-        cacheUsuariosPorBot[botId].push(userId);
-        await updateDoc(botRef, { 
+// ------------------- ENVIAR MENSAGEM -------------------
+async function enviarMensagemUsuario(botId,mensagem){
+    adicionarMensagem(mensagem,"user");
+    const usuariosKey = `bot_${botId}_usuarios`;
+    if(!sessionStorage.getItem(usuariosKey)){
+        await updateDoc(doc(db,"bots",botId),{
             usuarios: arrayUnion(userId),
             usuariosMensagens: increment(1)
         });
+        sessionStorage.setItem(usuariosKey,"1");
     }
 }
 
-// ------------------- Mensagem do bot digitando -------------------
-async function adicionarMensagemBotDigitando(botId, mensagem, tempo = 1500, contar = true) {
-    const botDigitando = document.createElement("p");
-    botDigitando.classList.add("bot");
-    botDigitando.textContent = "Digitando...";
-    chatBox.appendChild(botDigitando);
-    botDigitando.scrollIntoView({ behavior: "smooth", block: "start" });
+// ------------------- MENSAGEM BOT -------------------
+async function adicionarMensagemBot(botId,mensagem,tempo=1500,contar=true){
+    const p=document.createElement("p");
+    p.classList.add("bot");
+    p.textContent="Digitando...";
+    chatBox.appendChild(p);
+    p.scrollIntoView({behavior:"smooth",block:"start"});
 
-    return new Promise(resolve => {
-        setTimeout(async () => {
-            botDigitando.remove();
-            if (contar) {
-                await updateDoc(doc(db, "bots", botId), { mensagens: increment(1) });
-            }
-            adicionarMensagemNoChat(mensagem, "bot");
+    return new Promise(resolve=>{
+        setTimeout(async()=>{
+            p.remove();
+            if(contar) await updateDoc(doc(db,"bots",botId),{mensagens:increment(1)});
+            adicionarMensagem(mensagem,"bot");
             resolve();
-        }, tempo);
+        },tempo);
     });
 }
 
-// ------------------- INICIA CHAT -------------------
-async function iniciarChatPublico() {
+// ------------------- INICIAR CHAT -------------------
+async function iniciarChatPublico(){
     const uid = obterUIDDaURL();
-    if (!uid) {
-        chatBox.innerHTML = "<p class='bot'>Link inválido ou UID não encontrado.</p>";
+    if(!uid){
+        chatBox.innerHTML="<p class='bot'>Link inválido ou UID não encontrado.</p>";
+        return;
+    }
+    chatContainer.style.display="flex";
+
+    // Pega bots ativos apenas uma vez
+    const snapshot = await getDocs(query(collection(db,"bots"),where("uid","==",uid)));
+    const botsAtivos = snapshot.docs.map(d=>({id:d.id,...d.data()})).filter(b=>b.status==="Ativo");
+
+    if(botsAtivos.length===0){
+        chatBox.innerHTML="<p class='bot'>Nenhum bot ativo disponível.</p>";
         return;
     }
 
-    chatContainer.style.display = "flex";
+    // Criar select apenas uma vez
+    const selectContainer=document.createElement("div");
+    selectContainer.classList.add("select-container");
+    const titulo=document.createElement("p");
+    titulo.textContent="Selecione uma função do bot:";
+    titulo.classList.add("bot");
+    selectContainer.appendChild(titulo);
+    const selectChat=document.createElement("select");
+    selectChat.classList.add("select-chat");
+    selectContainer.appendChild(selectChat);
+    chatHeader.appendChild(selectContainer);
 
-    // Listener em tempo real para bots do usuário
-    const q = query(collection(db, "bots"), where("uid", "==", uid));
-    onSnapshot(q, async snapshot => {
-        if (snapshot.empty) {
-            chatBox.innerHTML = "<p class='bot'>Nenhum bot disponível.</p>";
-            return;
-        }
+    const placeholder=document.createElement("option");
+    placeholder.textContent="Selecione...";
+    placeholder.value="";
+    placeholder.disabled=true;
+    placeholder.selected=true;
+    selectChat.appendChild(placeholder);
 
-        const botsAtivos = snapshot.docs
-            .map(docSnap => ({ id: docSnap.id, ...docSnap.data() }))
-            .filter(bot => bot.status === "Ativo");
-
-        if (botsAtivos.length === 0) {
-            chatBox.innerHTML = "<p class='bot'>Nenhum bot ativo disponível.</p>";
-            return;
-        }
-
-        // Atualiza select dinamicamente
-        let selectContainer = document.querySelector(".select-container");
-        if (!selectContainer) {
-            selectContainer = document.createElement("div");
-            selectContainer.classList.add("select-container");
-
-            const titulo = document.createElement("p");
-            titulo.textContent = "Selecione uma função do bot:";
-            titulo.classList.add("bot");
-            selectContainer.appendChild(titulo);
-
-            const selectChat = document.createElement("select");
-            selectChat.classList.add("select-chat");
-            selectContainer.appendChild(selectChat);
-
-            chatHeader.appendChild(selectContainer);
-        }
-
-        const selectChat = selectContainer.querySelector("select");
-        selectChat.innerHTML = ""; // limpa opções
-
-        const placeholder = document.createElement("option");
-        placeholder.textContent = "Selecione...";
-        placeholder.value = "";
-        placeholder.disabled = true;
-        placeholder.selected = true;
-        selectChat.appendChild(placeholder);
-
-        botsAtivos.forEach(bot => {
-            const opt = document.createElement("option");
-            opt.value = bot.id;
-            opt.textContent = bot.funcao || "Função não definida";
-            selectChat.appendChild(opt);
-        });
-
-        selectChat.onchange = async () => {
-            const botId = selectChat.value;
-            if (!botId) return;
-
-            const botData = botsAtivos.find(b => b.id === botId);
-            if (!botData) return;
-
-            await enviarMensagemUsuario(botId, botData.funcao || "Bot");
-            await adicionarMensagemBotDigitando(botId, botData.descricao || "Sem resposta configurada.", 1000);
-
-            selectChat.value = "";
-        };
+    botsAtivos.forEach(bot=>{
+        const opt=document.createElement("option");
+        opt.value=bot.id;
+        opt.textContent=bot.funcao||"Função não definida";
+        selectChat.appendChild(opt);
     });
 
-    // Mensagem de boas-vindas do primeiro bot
-    const firstBot = (await getDocs(q)).docs
-        .map(docSnap => ({ id: docSnap.id, ...docSnap.data() }))
-        .find(bot => bot.status === "Ativo");
+    selectChat.onchange=async()=>{
+        const botId=selectChat.value;
+        if(!botId) return;
+        const botData=botsAtivos.find(b=>b.id===botId);
+        if(!botData) return;
 
-    if (firstBot) {
-        const nomeAssistente = nomeAleatorio();
-        await adicionarMensagemBotDigitando(firstBot.id, obterSaudacao(), 1500, false);
-        await adicionarMensagemBotDigitando(firstBot.id, `Eu sou o ${nomeAssistente}.`, 2000, false);
-        await adicionarMensagemBotDigitando(firstBot.id, "Escolha uma opção acima para começar.", 2000, false);
-    }
+        await enviarMensagemUsuario(botId,botData.funcao||"Bot");
+        await adicionarMensagemBot(botId,botData.descricao||"Sem resposta configurada.",1000);
+        selectChat.value="";
+    };
+
+    // Boas-vindas do primeiro bot
+    const firstBot=botsAtivos[0];
+    const nomeAssistente=nomeAleatorio();
+    await adicionarMensagemBot(firstBot.id,obterSaudacao(),1500,false);
+    await adicionarMensagemBot(firstBot.id,`Eu sou o ${nomeAssistente}.`,1500,false);
+    await adicionarMensagemBot(firstBot.id,"Escolha uma opção acima para começar.",1500,false);
 }
 
-// ------------------- INICIA -------------------
 iniciarChatPublico();

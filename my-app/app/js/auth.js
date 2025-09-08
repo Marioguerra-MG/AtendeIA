@@ -6,7 +6,7 @@ import {
     onAuthStateChanged, 
     sendPasswordResetEmail 
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-import { doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 // ---------- FUNÇÃO DE TOAST ----------
 function showToast(message, type = "success", duration = 4000) {
@@ -73,21 +73,10 @@ if (formLogin) {
             const userCredential = await signInWithEmailAndPassword(auth, email, senha);
             await loadingToast;
 
-            showToast("Login realizado com sucesso! Verificando plano...", "success");
-
-            // verifica plano do usuário
-            const ref = doc(db, "usuarios", userCredential.user.uid);
-            const snap = await getDoc(ref);
-
-            if (!snap.exists() || snap.data().plano !== "pro") {
-                // usuário não é Pro → mostra modal
-                document.getElementById("modalPlanos").style.display = "flex";
-            } else {
-                // usuário Pro → redireciona para dashboard
-                setTimeout(() => {
-                    window.location.href = "/my-app/app/html/main.html";
-                }, 1000);
-            }
+            showToast("Login realizado com sucesso!", "success");
+            setTimeout(() => {
+                window.location.href = "/my-app/app/html/main.html";
+            }, 1000);
 
         } catch (error) {
             await loadingToast;
@@ -121,11 +110,9 @@ if (formCadastro) {
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
 
-            // cria usuário no Firestore sem plano
             await setDoc(doc(db, "usuarios", userCredential.user.uid), {
                 nome: nome,
-                email: email,
-                plano: "none"
+                email: email
             });
 
             showToast("Cadastro realizado! Faça login para continuar.", "success");
@@ -171,36 +158,12 @@ if (btnEsqueciSenha) {
     });
 }
 
-// ---------- LOGIN AUTOMÁTICO E VERIFICAÇÃO DE PLANO ----------
+// ---------- LOGIN AUTOMÁTICO ----------
 onAuthStateChanged(auth, async (user) => {
     if (user) {
-        const ref = doc(db, "usuarios", user.uid);
-        const snap = await getDoc(ref);
-
-        if (!snap.exists() || snap.data().plano !== "pro") {
-            // usuário não Pro → mostra modal
-            document.getElementById("modalPlanos").style.display = "flex";
-        } else {
-            // usuário Pro → redireciona se estiver no login/cadastro
-            if (window.location.pathname.includes("loginCadastro.html") || window.location.pathname.includes("index.html")) {
-                window.location.href = "/my-app/app/html/main.html";
-            }
+        // redireciona se estiver no login/cadastro
+        if (window.location.pathname.includes("loginCadastro.html") || window.location.pathname.includes("index.html")) {
+            window.location.href = "/my-app/app/html/main.html";
         }
     }
 });
-
-// ---------- BOTÃO DE COMPRA PRO ----------
-const btnComprarPro = document.getElementById("btnComprarPro");
-if (btnComprarPro) {
-    btnComprarPro.addEventListener("click", () => {
-        window.location.href = "https://pay.kiwify.com.br/dpai3gT"; // substitua pelo seu link Kiwify
-    });
-}
-
-// ---------- MODAL DE PLANOS FECHAR ----------
-const closeModal = document.getElementById("closeModalPlanos");
-if (closeModal) {
-    closeModal.addEventListener("click", () => {
-        document.getElementById("modalPlanos").style.display = "none";
-    });
-}

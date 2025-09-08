@@ -967,6 +967,12 @@ label {
     color: #24292f;
 }
 
+.input-error {
+  border: 2px solid #dc3545;
+  background-color: #ffe5e5;
+  transition: all 0.3s;
+}
+
 @media (max-width: 420px) {
     #modal-configuracoes .modal-content {
         padding: 25px 15px;
