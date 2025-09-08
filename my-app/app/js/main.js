@@ -1,7 +1,7 @@
 // ---------- IMPORTS ----------
 import { db, auth } from '/my-bd/firebase-config.js';
 import {
-  collection, doc, addDoc, updateDoc, deleteDoc, getDoc, query, where, onSnapshot
+  collection, doc, addDoc, updateDoc, deleteDoc, getDoc, getDocs, query, where
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
@@ -227,26 +227,36 @@ async function excluirBot(id) {
     try {
       await deleteDoc(doc(db, "bots", id));
       showToast("Bot excluído com sucesso!");
+      await carregarBots();
     } catch { showToast("Erro ao excluir bot.", "error"); }
   } else { showToast("Exclusão cancelada.", "error"); }
 }
 
-// ---------- FIRESTORE LISTENER ----------
+// ---------- FUNÇÃO PARA CARREGAR BOTS ----------
+async function carregarBots() {
+  const uid = auth.currentUser?.uid;
+  if (!uid) return;
+
+  const qBots = query(collection(db, "bots"), where("uid", "==", uid));
+  const snapshot = await getDocs(qBots);
+
+  tabelaBots.innerHTML = "";
+  listaDeBots = [];
+
+  snapshot.forEach(docSnap => {
+    const bot = docSnap.data();
+    adicionarLinhaTabela(bot.nome, bot.status ?? "Ativo", bot.funcao, docSnap.id);
+    listaDeBots.push({ id: docSnap.id, nome: bot.nome, funcao: bot.funcao, status: bot.status ?? "Ativo" });
+  });
+
+  atualizarCards(snapshot);
+  atualizarBotsCards(listaDeBots);
+}
+
+// ---------- FIRESTORE (OTIMIZADO) ----------
 onAuthStateChanged(auth, user => {
   if (!user) { window.location.href = "/index.html"; return; }
-  const uid = user.uid;
-  const qBots = query(collection(db, "bots"), where("uid", "==", uid));
-  onSnapshot(qBots, snapshot => {
-    tabelaBots.innerHTML = "";
-    listaDeBots = [];
-    snapshot.forEach(docSnap => {
-      const bot = docSnap.data();
-      adicionarLinhaTabela(bot.nome, bot.status ?? "Ativo", bot.funcao, docSnap.id);
-      listaDeBots.push({ id: docSnap.id, nome: bot.nome, funcao: bot.funcao, status: bot.status ?? "Ativo" });
-    });
-    atualizarCards(snapshot);
-    atualizarBotsCards(listaDeBots);
-  });
+  carregarBots();
 });
 
 // ---------- BUSCAR ----------
@@ -285,6 +295,7 @@ document.getElementById("btnAddLink")?.addEventListener("click", () => {
   descricaoBot.value += link;
 });
 
+// ---------- CRIAR BOT ----------
 formCriarBot?.addEventListener("submit", async e => {
   e.preventDefault();
 
@@ -293,44 +304,31 @@ formCriarBot?.addEventListener("submit", async e => {
   let funcao = funcaoSelect.value;
 
   const modal = document.getElementById("modal-criar-bot");
-  if(modal) modal.style.display = "flex"; // garante que o modal fique aberto
+  if(modal) modal.style.display = "flex";
 
-  // --- Passo 1: Nome ---
   if (!nomeInput.value.trim()) {
     nomeInput.classList.add("input-error");
     showToast("Preencha o nome do bot.", "error", 5000);
-    nomeInput.addEventListener("input", () => {
-      if (nomeInput.value.trim()) nomeInput.classList.remove("input-error");
-    }, { once: true });
-    return; // interrompe até preencher
-  }
-
-  // --- Passo 2: Descrição ---
-  if (!descricaoInput.value.trim()) {
-    descricaoInput.classList.add("input-error");
-    showToast("Preencha a descrição do bot.", "error", 5000);
-    descricaoInput.addEventListener("input", () => {
-      if (descricaoInput.value.trim()) descricaoInput.classList.remove("input-error");
-    }, { once: true });
     return;
   }
 
-  // --- Passo 3: Função ---
+  if (!descricaoInput.value.trim()) {
+    descricaoInput.classList.add("input-error");
+    showToast("Preencha a descrição do bot.", "error", 5000);
+    return;
+  }
+
   if (funcao === "outra") {
     funcao = funcaoCustom.value.trim();
     if (!funcao) {
       funcaoCustom.classList.add("input-error");
       showToast("Preencha a função do bot.", "error", 5000);
-      funcaoCustom.addEventListener("input", () => {
-        if (funcaoCustom.value.trim()) funcaoCustom.classList.remove("input-error");
-      }, { once: true });
       return;
     }
   } else {
     funcao = funcaoSelect.options[funcaoSelect.selectedIndex].text;
   }
 
-  // --- Se chegou aqui, tudo preenchido ---
   try {
     const uid = auth.currentUser?.uid;
     if (!uid) { showToast("Usuário não logado.", "error"); return; }
@@ -351,15 +349,15 @@ formCriarBot?.addEventListener("submit", async e => {
 
     if(modal) modal.style.display = "none";
 
+    await carregarBots();
+
   } catch (e) {
     console.error(e);
     showToast("Erro ao criar bot.", "error");
   }
 });
 
-
-
-// ===\\\]---------- FORMULÁRIO EDITAR BOT ----------
+// ---------- FORMULÁRIO EDITAR BOT ----------
 formEditarBot?.addEventListener("submit", async e => {
   e.preventDefault();
 
@@ -402,6 +400,8 @@ formEditarBot?.addEventListener("submit", async e => {
 
     if (modalEditar) modalEditar.style.display = "none";
 
+    await carregarBots();
+
   } catch (e) {
     console.error(e);
     showToast("Erro ao atualizar bot.", "error");
@@ -414,7 +414,7 @@ closeEditar?.addEventListener("click", () => {
   if (modalEditar) modalEditar.style.display = "none";
 });
 
-// Fechar modal editar ao clicar fora do conteúdo
+// Fechar modal editar ao clicar fora
 modalEditar?.addEventListener("click", (e) => {
   if (e.target === modalEditar) {
     modalEditar.style.display = "none";
