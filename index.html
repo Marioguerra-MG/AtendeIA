@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/my-app/app/css/index.css">
+  <link rel="stylesheet" href="/my-app/app/css/plano.css">
   <title>AtendeIA - Login</title>
 
 </head>
@@ -21,6 +22,8 @@
         <input type="password" id="loginSenha" placeholder="Senha" required>
         <button type="submit">Entrar</button>
       </form>
+      <button id="abrirModalPlanos">Acessar credenciais</button>
+
       <p><a href="#" id="esqueciSenha">Esqueci minha senha</a></p>
       <p>Não tem conta? <a href="/my-app/app/html/loginCadastro.html" id="mostrarCadastro">Cadastre-se</a></p>
     </div>
@@ -41,12 +44,45 @@
   <!-- Toast Container -->
   <div id="toast-container"></div>
 
+  <!-- Modal Comparativo -->
+  <div id="modalPlanos" class="modal-planos">
+    <div class="modalPlanos-content">
+
+      <!-- Botão fechar -->
+      <span class="modalPlanos-close" id="closeModalPlanos">&times;</span>
+
+      <!-- Título -->
+      <h2 class="modalPlanos-title">Comece Agora</h2>
+      <p class="modalPlanos-text">Desbloqueie todo o poder da AtendeIA escolhendo a melhor opção para você.</p>
+
+      <!-- Cards de aquisição -->
+      <div class="modalPlanos-cards">
+
+        <!-- Pro -->
+        <div class="modalPlanos-card destaque-pro">
+          <h3 class="card-title">Acesso Pro</h3>
+          <p class="card-price">R$15,99 / mês</p>
+          <ul class="card-benefits">
+            <li>✅ Criação ilimitada de bots</li>
+            <li>✅ Respostas automáticas sem limite</li>
+            <li>✅ Relatórios em tempo real</li>
+            <li>✅ Perguntas personalizadas</li>
+            <li>✅ Suporte prioritário</li>
+          </ul>
+          <button class="card-btn" id="btnComprarPro">Adquirir Pro</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
 
   <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
- 
+  <script src="/my-bd/plano.js"></script>
+
   <script type="module" src="/my-bd/firebase-config.js"></script>
   <script type="module" src="/my-app/app/js/auth.js"></script>
 

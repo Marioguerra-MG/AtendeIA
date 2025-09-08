@@ -1,0 +1,245 @@
+/* ============================= */
+/* MODAL DE PLANOS - REESTILIZADO */
+/* ============================= */
+.modal-planos {
+    position: fixed;
+    z-index: 9999;
+    inset: 0;
+    /* substitui top/left/right/bottom */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(15, 15, 15, 0.75);
+    animation: fadeIn 0.3s ease-in-out;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Conteúdo do Modal */
+.modalPlanos-content {
+    background: #fff;
+    padding: 50px 35px;
+    border-radius: 18px;
+    width: 100%;
+    max-width: 850px;
+    text-align: center;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+    position: relative;
+    transform: translateY(-30px);
+    animation: slideIn 0.35s ease-out forwards;
+    font-family: "Poppins", sans-serif;
+}
+
+/* Botão fechar */
+.modalPlanos-close {
+    position: absolute;
+    top: 18px;
+    right: 22px;
+    font-size: 30px;
+    font-weight: bold;
+    color: #555;
+    cursor: pointer;
+    transition: transform 0.2s, color 0.2s;
+}
+
+.modalPlanos-close:hover {
+    color: #ff4500;
+    transform: rotate(90deg) scale(1.2);
+}
+
+/* Título e subtítulo */
+.modalPlanos-title {
+    font-size: 32px;
+    margin-bottom: 10px;
+    color: #111;
+    font-weight: 700;
+}
+
+.modalPlanos-text {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 35px;
+}
+
+/* Container de cards */
+.modalPlanos-cards {
+    display: flex;
+    gap: 25px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Card individual */
+.modalPlanos-card {
+    background: linear-gradient(180deg, #fff, #fdfdfd);
+    border-radius: 16px;
+    padding: 35px 25px;
+    width: 280px;
+    min-height: 380px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: 2px solid transparent;
+}
+
+.modalPlanos-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.18);
+}
+
+/* Card Pro destacado */
+.destaque-pro {
+    border: 3px solid #ff4500;
+    background: linear-gradient(180deg, #fffaf7, #fff);
+}
+
+/* Títulos e preços dos cards */
+.card-title {
+    font-size: 22px;
+    margin-bottom: 8px;
+    color: #111;
+    font-weight: 600;
+}
+
+.card-price {
+    font-size: 22px;
+    color: #ff4500;
+    margin-bottom: 25px;
+    font-weight: 700;
+}
+
+/* Lista de benefícios */
+.card-benefits {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 25px;
+    text-align: left;
+}
+
+.card-benefits li {
+    margin-bottom: 12px;
+    font-size: 15px;
+    color: #444;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    line-height: 1.4;
+}
+
+/* Botões */
+.card-btn {
+    background: linear-gradient(135deg, #ff6a00, #ff4500);
+    color: #fff;
+    padding: 15px 22px;
+    font-size: 15px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 18px rgba(255, 69, 0, 0.4);
+    width: 100%;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.card-btn:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 10px 25px rgba(255, 69, 0, 0.55);
+}
+
+#abrirModalPlanos {
+    width: 100%;
+    padding: 12px 15px;
+    background: linear-gradient(135deg, #ff6a00, #ff4500);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    margin-top: 8px;
+    /* separa do input anterior */
+}
+
+#abrirModalPlanos:hover {
+    background-color: #444c56;
+}
+
+/* ============================= */
+/* ANIMAÇÕES */
+/* ============================= */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================= */
+/* RESPONSIVIDADE */
+/* ============================= */
+@media screen and (max-width: 768px) {
+    .modalPlanos-content {
+        padding: 30px 20px;
+        border-radius: 14px;
+    }
+
+    .modalPlanos-title {
+        font-size: 26px;
+    }
+
+    .modalPlanos-text {
+        font-size: 14px;
+    }
+
+    .modalPlanos-cards {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .modalPlanos-card {
+        width: 100%;
+        max-width: 340px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .modalPlanos-content {
+        padding: 20px 15px;
+    }
+
+    .card-title {
+        font-size: 20px;
+    }
+
+    .card-price {
+        font-size: 18px;
+    }
+
+    .card-benefits li {
+        font-size: 14px;
+    }
+
+    .card-btn {
+        font-size: 14px;
+        padding: 12px;
+    }
+}
