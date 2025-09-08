@@ -2,7 +2,7 @@
 const modalPlanos = document.getElementById("modalPlanos");
 const closeModalPlanos = document.getElementById("closeModalPlanos");
 const btnComprarPro = document.getElementById("btnComprarPro");
-const btnSelecionarFree = document.getElementById("btnSelecionarFree");
+
 
 // Abrir modal (exemplo: ao clicar em botão upgrade)
 document.getElementById("abrirModalPlanos")?.addEventListener("click", () => {
@@ -24,10 +24,4 @@ btnComprarPro.addEventListener("click", () => {
     modalPlanos.style.display = "none";
     showToast("Plano Pro selecionado! Redirecionando para pagamento...", "success");
     // Aqui você pode integrar o Stripe, PagSeguro ou outro gateway
-});
-
-btnSelecionarFree.addEventListener("click", () => {
-    modalPlanos.style.display = "none";
-    showToast("Plano Grátis selecionado! Aproveite os recursos limitados.", "success");
-    // Aqui você pode registrar o plano no Firestore se quiser
 });

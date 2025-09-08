@@ -1,8 +1,12 @@
 // ---------- IMPORTS ----------
-import { auth } from '/my-bd/firebase-config.js';
-import { signInWithEmailAndPassword, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-
-
+import { auth, db } from '/my-bd/firebase-config.js';
+import { 
+    signInWithEmailAndPassword, 
+    createUserWithEmailAndPassword,
+    onAuthStateChanged, 
+    sendPasswordResetEmail 
+} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import { doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 // ---------- FUNÇÃO DE TOAST ----------
 function showToast(message, type = "success", duration = 4000) {
@@ -63,23 +67,30 @@ if (formLogin) {
         const email = document.getElementById("loginEmail").value.trim();
         const senha = document.getElementById("loginSenha").value.trim();
 
-        // Mensagem inicial de login em andamento
-        const loadingToast = showToast("Tentando efetuar login...", "success", 2000); // duração mínima de 2s
+        const loadingToast = showToast("Tentando efetuar login...", "success", 2000);
 
         try {
-            await signInWithEmailAndPassword(auth, email, senha);
-
-            // Aguarda pelo menos a duração mínima
+            const userCredential = await signInWithEmailAndPassword(auth, email, senha);
             await loadingToast;
 
-            showToast("Login realizado com sucesso! Redirecionando...", "success");
-            setTimeout(() => {
-                window.location.href = "/my-app/app/html/main.html";
-            }, 1500);
+            showToast("Login realizado com sucesso! Verificando plano...", "success");
+
+            // verifica plano do usuário
+            const ref = doc(db, "usuarios", userCredential.user.uid);
+            const snap = await getDoc(ref);
+
+            if (!snap.exists() || snap.data().plano !== "pro") {
+                // usuário não é Pro → mostra modal
+                document.getElementById("modalPlanos").style.display = "flex";
+            } else {
+                // usuário Pro → redireciona para dashboard
+                setTimeout(() => {
+                    window.location.href = "/my-app/app/html/main.html";
+                }, 1000);
+            }
 
         } catch (error) {
             await loadingToast;
-
             console.log("Firebase error code:", error.code);
             let mensagem;
 
@@ -89,12 +100,48 @@ if (formLogin) {
                 mensagem = "Senha incorreta. Verifique e tente novamente.";
             } else if (error.code === "auth/invalid-email") {
                 mensagem = "O e-mail digitado é inválido. Verifique e tente novamente.";
-            } else if (error.code === "auth/too-many-requests") {
-                mensagem = "Muitas tentativas falhas. Tente novamente mais tarde.";
             } else {
-                mensagem = "Não foi possível efetuar o login. Verifique se seu e-mail e senha estão corretos.";
+                mensagem = "Não foi possível efetuar o login. Verifique seu e-mail e senha.";
             }
 
+            showToast(mensagem, "error");
+        }
+    });
+}
+
+// ---------- CADASTRO ----------
+const formCadastro = document.getElementById("form-cadastro");
+if (formCadastro) {
+    formCadastro.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const nome = document.getElementById("cadastroNome").value.trim();
+        const email = document.getElementById("cadastroEmail").value.trim();
+        const senha = document.getElementById("cadastroSenha").value.trim();
+
+        try {
+            const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
+
+            // cria usuário no Firestore sem plano
+            await setDoc(doc(db, "usuarios", userCredential.user.uid), {
+                nome: nome,
+                email: email,
+                plano: "none"
+            });
+
+            showToast("Cadastro realizado! Faça login para continuar.", "success");
+            setTimeout(() => {
+                window.location.href = "/my-app/app/html/index.html";
+            }, 1500);
+        } catch (error) {
+            console.log("Erro cadastro:", error.code);
+            let mensagem = "Erro ao cadastrar. Tente novamente.";
+            if (error.code === "auth/email-already-in-use") {
+                mensagem = "Este e-mail já está em uso.";
+            } else if (error.code === "auth/invalid-email") {
+                mensagem = "E-mail inválido. Digite corretamente.";
+            } else if (error.code === "auth/weak-password") {
+                mensagem = "Senha muito fraca. Use ao menos 6 caracteres.";
+            }
             showToast(mensagem, "error");
         }
     });
@@ -105,47 +152,55 @@ const btnEsqueciSenha = document.getElementById("esqueciSenha");
 if (btnEsqueciSenha) {
     btnEsqueciSenha.addEventListener("click", async (e) => {
         e.preventDefault();
-
         const email = document.getElementById("loginEmail").value.trim();
-
         if (!email) {
-            showToast("Digite seu e-mail no campo antes de solicitar a redefinição.", "error");
+            showToast("Digite seu e-mail antes de solicitar a redefinição.", "error");
             return;
         }
 
         try {
             await sendPasswordResetEmail(auth, email);
-
-            // Primeiro toast
-            showToast("Email de redefinição enviado! Verifique sua caixa de entrada ou a pasta SPAM.", "success");
-
-            // Segundo toast com 1s de atraso
-            setTimeout(() => {
-                showToast("E-mail enviado! Confira também sua pasta SPAM.", "success");
-            }, 1000);
+            showToast("E-mail de redefinição enviado! Confira sua caixa de entrada.", "success");
         } catch (error) {
-            console.error("Erro ao enviar reset:", error.code);
-            let mensagem;
-
-            if (error.code === "auth/user-not-found") {
-                mensagem = "Usuário não encontrado. Verifique o e-mail.";
-            } else if (error.code === "auth/invalid-email") {
-                mensagem = "E-mail inválido. Digite corretamente.";
-            } else {
-                mensagem = "Erro ao enviar email de redefinição. Tente novamente.";
-            }
-
+            console.error("Erro reset:", error.code);
+            let mensagem = "Erro ao enviar e-mail. Tente novamente.";
+            if (error.code === "auth/user-not-found") mensagem = "Usuário não encontrado.";
+            else if (error.code === "auth/invalid-email") mensagem = "E-mail inválido.";
             showToast(mensagem, "error");
         }
     });
 }
 
-// ---------- VERIFICA LOGIN AUTOMÁTICO ----------
-onAuthStateChanged(auth, user => {
+// ---------- LOGIN AUTOMÁTICO E VERIFICAÇÃO DE PLANO ----------
+onAuthStateChanged(auth, async (user) => {
     if (user) {
-        console.log("Usuário logado:", user.email);
-        if (window.location.pathname.includes("loginCadastro.html") || window.location.pathname.includes("index.html")) {
-            window.location.href = "/my-app/app/html/main.html";
+        const ref = doc(db, "usuarios", user.uid);
+        const snap = await getDoc(ref);
+
+        if (!snap.exists() || snap.data().plano !== "pro") {
+            // usuário não Pro → mostra modal
+            document.getElementById("modalPlanos").style.display = "flex";
+        } else {
+            // usuário Pro → redireciona se estiver no login/cadastro
+            if (window.location.pathname.includes("loginCadastro.html") || window.location.pathname.includes("index.html")) {
+                window.location.href = "/my-app/app/html/main.html";
+            }
         }
     }
 });
+
+// ---------- BOTÃO DE COMPRA PRO ----------
+const btnComprarPro = document.getElementById("btnComprarPro");
+if (btnComprarPro) {
+    btnComprarPro.addEventListener("click", () => {
+        window.location.href = "https://pay.kiwify.com.br/dpai3gT"; // substitua pelo seu link Kiwify
+    });
+}
+
+// ---------- MODAL DE PLANOS FECHAR ----------
+const closeModal = document.getElementById("closeModalPlanos");
+if (closeModal) {
+    closeModal.addEventListener("click", () => {
+        document.getElementById("modalPlanos").style.display = "none";
+    });
+}
